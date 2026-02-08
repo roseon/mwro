@@ -72,6 +72,44 @@ if (isset($_POST['action']) && $_POST['action'] === 'update_user') {
     $activeTab = 'users';
 }
 
+if (isset($_POST['action']) && $_POST['action'] === 'delete_user') {
+    $userId = $_POST['user_id'] ?? '';
+    if ($userId !== '') {
+        try {
+            $pdo->beginTransaction();
+            $stmt = $pdo->prepare("SELECT data FROM User WHERE id = ?");
+            $stmt->execute([$userId]);
+            $row = $stmt->fetch();
+
+            if ($row) {
+                $data = json_decode($row['data'], true);
+                $characterIds = $data['characters'] ?? [];
+                if (is_array($characterIds) && !empty($characterIds)) {
+                    $delPlayer = $pdo->prepare("DELETE FROM Player WHERE id = ?");
+                    foreach ($characterIds as $charId) {
+                        $delPlayer->execute([intval($charId)]);
+                    }
+                }
+            }
+
+            $delUser = $pdo->prepare("DELETE FROM User WHERE id = ?");
+            if ($delUser->execute([$userId])) {
+                $pdo->commit();
+                $message = "User $userId deleted.";
+            } else {
+                $pdo->rollBack();
+                $error = "Failed to delete user.";
+            }
+        } catch (Exception $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            $error = "Failed to delete user.";
+        }
+    }
+    $activeTab = 'users';
+}
+
 // Item Management
 if (isset($_POST['action']) && ($_POST['action'] === 'save_item')) {
     $itemId = intval($_POST['item_id']);
@@ -1016,6 +1054,11 @@ sort($npcImages);
                                             data-chars="<?php echo htmlspecialchars(json_encode($u['data']['characters'] ?? [])); ?>">
                                         Edit
                                     </button>
+                                    <form method="POST" style="display:inline;" onsubmit="return confirm('Delete user and all characters?');">
+                                        <input type="hidden" name="action" value="delete_user">
+                                        <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($u['id']); ?>">
+                                        <button class="btn btn-sm btn-danger">Del</button>
+                                    </form>
                                 </td>
                             </tr>
                             <?php endforeach; ?>
@@ -1513,104 +1556,86 @@ sort($npcImages);
                             <button onclick="insertSpeech()" class="btn btn-primary w-100">Insert Speech Block</button>
                         </div>
                         <div class="tab-pane fade" id="tabQuest">
-                            <select id="sbQuestType" class="form-select mb-2" onchange="toggleQuestBuilderFields()">
-                                <option value="start">Start Quest</option>
-                                <option value="item">Turn In Items</option>
-                                <option value="set">Set Stage (Update)</option>
-                                <option value="remove">Remove Quest (Finish)</option>
-                            </select>
-                            
                             <div class="row mb-2">
                                 <div class="col-6">
-                                    <input type="number" id="sbQuestId" class="form-control" placeholder="Quest ID">
-                                    <div class="form-text text-muted small">Target Quest ID</div>
+                                    <label>Quest ID</label>
+                                    <input type="number" id="qbQuestId" class="form-control" placeholder="Quest ID">
                                 </div>
-                                <div class="col-6" id="sbQuestStageContainer">
-                                    <input type="number" id="sbQuestStage" class="form-control" placeholder="Next Stage" value="1">
-                                    <div class="form-text text-muted small">New Stage (0=Start)</div>
-                                </div>
-                            </div>
-                        
-                            <div id="sbQuestStartFields">
-                                <textarea id="sbQuestMsg" class="form-control" rows="2" placeholder="Start Message (Will you help me?)"></textarea>
-                                <div class="form-text text-muted small mb-2">Intro text when offering quest.</div>
-                            </div>
-
-                            <div id="sbQuestChainContainer" class="mb-2">
-                                <div class="row g-2 mb-2">
-                                    <div class="col-8">
-                                        <select id="sbQuestChainSelect" class="form-select">
-                                            <option value="">Select quest to chain...</option>
-                                            <?php foreach ($quests as $q): ?>
-                                                <option value="<?php echo $q['id']; ?>"><?php echo htmlspecialchars($q['name']); ?> (<?php echo $q['id']; ?>)</option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                    <div class="col-4">
-                                        <button type="button" class="btn btn-outline-info w-100" onclick="addQuestChain()">Add</button>
-                                    </div>
-                                </div>
-                                <div id="sbQuestChainList" class="d-flex flex-column gap-1"></div>
-                                <div class="form-text text-muted small">Chain order = list order. Set stage per quest (default 0).</div>
-                            </div>
-                        
-                            <div id="sbQuestItemFields" style="display:none;">
-                                <div class="row mb-2">
-                                    <div class="col-6">
-                                        <input type="number" id="sbQuestItemId" class="form-control" placeholder="Item ID">
-                                        <div class="form-text text-muted small">Required Item ID</div>
-                                    </div>
-                                    <div class="col-6">
-                                        <input type="number" id="sbQuestItemCount" class="form-control" placeholder="Amount" value="1">
-                                        <div class="form-text text-muted small">Quantity needed</div>
-                                    </div>
-                                </div>
-                                <textarea id="sbQuestSuccess" class="form-control mb-1" rows="1" placeholder="Success Message"></textarea>
-                                <textarea id="sbQuestFail" class="form-control mb-1" rows="1" placeholder="Fail Message (Don't have items)"></textarea>
-                                <div class="form-text text-muted small mb-2">One message will be shown based on check.</div>
-                            </div>
-                            
-                            <div id="sbQuestSimpleMsg" style="display:none;">
-                                <textarea id="sbQuestSimpleText" class="form-control" rows="2" placeholder="Message"></textarea>
-                                <div class="form-text text-muted small mb-2">Message to show when performing this action.</div>
-                            </div>
-
-                            <div class="row mb-2">
-                                <div class="col-4">
-                                    <input type="number" id="sbQuestExp" class="form-control" placeholder="EXP">
-                                    <div class="form-text text-muted small">Reward EXP</div>
-                                </div>
-                                <div class="col-4">
-                                    <input type="number" id="sbQuestGold" class="form-control" placeholder="Gold">
-                                    <div class="form-text text-muted small">Reward Gold</div>
-                                </div>
-                                <div class="col-4 d-flex align-items-end">
+                                <div class="col-6 d-flex align-items-end">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sbQuestPetExp">
-                                        <label class="form-check-label" for="sbQuestPetExp">Pet EXP</label>
+                                        <input class="form-check-input" type="checkbox" id="qbQuestNotStarted" checked>
+                                        <label class="form-check-label" for="qbQuestNotStarted">Require quest not started</label>
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="mb-2">
+                                <label>Else Message (quest already started)</label>
+                                <textarea id="qbQuestElseMsg" class="form-control" rows="2" placeholder="Did you bring the item yet?"></textarea>
+                            </div>
+                            <div class="mb-2">
+                                <label>Intro Message</label>
+                                <textarea id="qbQuestIntro" class="form-control" rows="2" placeholder="Hi, wanna help me out with something?"></textarea>
+                            </div>
                             <div class="row mb-2">
-                                <div class="col-4">
-                                    <input type="number" id="sbQuestMinLevel" class="form-control" placeholder="Min Level">
-                                    <div class="form-text text-muted small">Minimum level</div>
+                                <div class="col-6">
+                                    <label>Accept Text</label>
+                                    <input type="text" id="qbQuestAcceptText" class="form-control" value="#GYeah sure#N">
                                 </div>
-                                <div class="col-4">
-                                    <input type="number" id="sbQuestMaxLevel" class="form-control" placeholder="Max Level">
-                                    <div class="form-text text-muted small">Maximum level</div>
+                                <div class="col-6">
+                                    <label>Decline Text</label>
+                                    <input type="text" id="qbQuestDeclineText" class="form-control" value="#YNo, I'm kinda busy.#N">
                                 </div>
-                                <div class="col-4 d-flex align-items-end">
+                            </div>
+                            <div class="mb-2">
+                                <label>Decline Message</label>
+                                <textarea id="qbQuestDeclineMsg" class="form-control" rows="1" placeholder="Well, come back if you change your mind!"></textarea>
+                            </div>
+                            <div class="mb-2">
+                                <label>Details Pages (one per line)</label>
+                                <textarea id="qbQuestPages" class="form-control" rows="3" placeholder="Page 1\nPage 2"></textarea>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    <label>Details Accept Text</label>
+                                    <input type="text" id="qbQuestDetailsAcceptText" class="form-control" value="#GSure, I got nothing better to do...#N">
+                                </div>
+                                <div class="col-6">
+                                    <label>Details Decline Text</label>
+                                    <input type="text" id="qbQuestDetailsDeclineText" class="form-control" value="#YNo, I'm deadly allergic to brooms.#N">
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label>Details Decline Message</label>
+                                <textarea id="qbQuestDetailsDeclineMsg" class="form-control" rows="1" placeholder="You are? Well okay then, I'll find someone else."></textarea>
+                            </div>
+                            <div class="mb-2">
+                                <label>Accept Final Message</label>
+                                <textarea id="qbQuestAcceptMsg" class="form-control" rows="2" placeholder="Thank you so much! You can find him outside the Herbal Shop."></textarea>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-6">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sbQuestLevelInclusive" checked>
-                                        <label class="form-check-label" for="sbQuestLevelInclusive">Inclusive</label>
+                                        <input class="form-check-input" type="checkbox" id="qbQuestAddQuest" checked>
+                                        <label class="form-check-label" for="qbQuestAddQuest">Add Quest on Accept</label>
+                                    </div>
+                                    <input type="number" id="qbQuestAddQuestId" class="form-control mt-1" placeholder="Quest ID (blank = main)">
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" id="qbQuestAddItem">
+                                        <label class="form-check-label" for="qbQuestAddItem">Add Item on Accept</label>
+                                    </div>
+                                    <div class="row g-2 mt-1">
+                                        <div class="col-7">
+                                            <input type="number" id="qbQuestAddItemId" class="form-control" placeholder="Item ID">
+                                        </div>
+                                        <div class="col-5">
+                                            <input type="number" id="qbQuestAddItemAmount" class="form-control" value="1" placeholder="Amt">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            <input type="text" id="sbQuestLevelFailMsg" class="form-control mb-2" placeholder="Level requirement message">
-                            
-                            <button onclick="insertQuestLogic()" class="btn btn-info w-100">Insert Logic</button>
+                            <button onclick="insertQuestLogic()" class="btn btn-info w-100">Insert Quest Conversation</button>
                         </div>
                         <div class="tab-pane fade" id="tabTele">
                             <div class="row">
@@ -2883,151 +2908,131 @@ sort($npcImages);
         }
 
         function insertQuestLogic() {
-            const type = document.getElementById('sbQuestType').value;
-            const qid = document.getElementById('sbQuestId').value;
-            const expValue = parseInt(document.getElementById('sbQuestExp').value, 10) || 0;
-            const goldValue = parseInt(document.getElementById('sbQuestGold').value, 10) || 0;
-            const petExp = document.getElementById('sbQuestPetExp').checked;
-            const minLevel = parseInt(document.getElementById('sbQuestMinLevel').value, 10);
-            const maxLevel = parseInt(document.getElementById('sbQuestMaxLevel').value, 10);
-            const inclusiveLevel = document.getElementById('sbQuestLevelInclusive').checked;
-            const levelFailMsg = document.getElementById('sbQuestLevelFailMsg').value;
-            const rewardActions = [];
-
-            let levelCondition = null;
-            if (!isNaN(minLevel) || !isNaN(maxLevel)) {
-                const levelParts = [];
-                if (!isNaN(minLevel)) levelParts.push(`"min": ${minLevel}`);
-                if (!isNaN(maxLevel)) levelParts.push(`"max": ${maxLevel}`);
-                levelParts.push(`"inclusive": ${inclusiveLevel ? 'true' : 'false'}`);
-                levelCondition = `{ "type": "level", ${levelParts.join(', ')} }`;
+            const questId = parseInt(document.getElementById('qbQuestId').value, 10);
+            if (isNaN(questId)) {
+                alert('Quest ID is required.');
+                return;
             }
 
-            const levelElse = levelCondition && levelFailMsg
-                ? `{ "type": "npcSay", "message": ${JSON.stringify(levelFailMsg)} }`
-                : null;
+            const introMsg = document.getElementById('qbQuestIntro').value.trim();
+            if (!introMsg) {
+                alert('Intro message is required.');
+                return;
+            }
 
-            if (expValue > 0) {
-                rewardActions.push(`{ "type": "exp", "amount": ${expValue} }`);
-                if (petExp) {
-                    rewardActions.push(`{ "type": "exp", "amount": ${expValue}, "pet": true }`);
+            const requireNotStarted = document.getElementById('qbQuestNotStarted').checked;
+            const elseMsg = document.getElementById('qbQuestElseMsg').value.trim();
+            const acceptText = document.getElementById('qbQuestAcceptText').value.trim() || 'Accept';
+            const declineText = document.getElementById('qbQuestDeclineText').value.trim() || 'Decline';
+            const declineMsg = document.getElementById('qbQuestDeclineMsg').value.trim();
+            const detailsPagesRaw = document.getElementById('qbQuestPages').value;
+            const detailsLines = detailsPagesRaw
+                .split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0);
+            const detailsMessage = detailsLines.length > 1
+                ? detailsLines
+                : (detailsLines.length === 1 ? detailsLines[0] : '');
+            const detailsAcceptText = document.getElementById('qbQuestDetailsAcceptText').value.trim() || 'Accept';
+            const detailsDeclineText = document.getElementById('qbQuestDetailsDeclineText').value.trim() || 'Decline';
+            const detailsDeclineMsg = document.getElementById('qbQuestDetailsDeclineMsg').value.trim();
+            const acceptMsg = document.getElementById('qbQuestAcceptMsg').value.trim();
+
+            const onCloseActions = [];
+            if (document.getElementById('qbQuestAddQuest').checked) {
+                const addQuestIdRaw = document.getElementById('qbQuestAddQuestId').value;
+                const addQuestId = addQuestIdRaw === '' ? questId : parseInt(addQuestIdRaw, 10);
+                if (!isNaN(addQuestId)) {
+                    onCloseActions.push({
+                        type: 'quest',
+                        add: addQuestId
+                    });
                 }
             }
 
-            if (goldValue > 0) {
-                rewardActions.push(`{ "type": "gold", "amount": ${goldValue} }`);
+            if (document.getElementById('qbQuestAddItem').checked) {
+                const addItemId = parseInt(document.getElementById('qbQuestAddItemId').value, 10);
+                const addItemAmount = parseInt(document.getElementById('qbQuestAddItemAmount').value, 10);
+                if (!isNaN(addItemId)) {
+                    const action = { type: 'addItem', baseItemId: addItemId };
+                    if (!isNaN(addItemAmount) && addItemAmount > 0) {
+                        action.amount = addItemAmount;
+                    }
+                    onCloseActions.push(action);
+                }
             }
-            let json = '';
-            
-            if (type === 'start') {
-                const msg = document.getElementById('sbQuestMsg').value;
-                const mainStage = getQuestDefaultStage(qid);
-                const chainItems = Array.from(document.querySelectorAll('#sbQuestChainList [data-quest-id]'));
-                const chainEntries = chainItems
-                    .map(item => {
-                        const chainId = parseInt(item.dataset.questId, 10);
-                        if (isNaN(chainId) || chainId === parseInt(qid, 10)) return null;
-                        const stageInput = item.querySelector('input');
-                        const chainStage = parseInt(stageInput?.value, 10);
-                        const fallbackStage = getQuestDefaultStage(chainId);
-                        const finalStage = isNaN(chainStage) ? fallbackStage : chainStage;
-                        return `{ "quest": ${chainId}, "stage": ${finalStage} }`;
-                    })
-                    .filter(Boolean);
-                const chainJson = chainEntries.length
-                    ? `, "chain": [\n                  ${chainEntries.join(',\n                  ')}\n              ]`
-                    : '';
-                const actions = [
-                    `{ "type": "quest", "add": { "quest": ${qid}, "stage": ${mainStage}${chainJson} } }`,
-                    ...rewardActions,
-                    `{ "type": "npcSay", "message": "Quest accepted!" }`
-                ];
-                const optionCondition = levelCondition ? `\n          "condition": ${levelCondition},` : '';
-                const optionElse = levelElse ? `\n          "else": ${levelElse},` : '';
-                json = `{
-  "type": "npcSay",
-  "message": ${JSON.stringify(msg)},
-  "options": [
-      {
-          "text": "Accept Quest",${optionCondition}${optionElse}
-          "action": {
-              "type": "array",
-              "actions": [
-                  ${actions.join(',\n                  ')}
-              ]
-          }
-      }
-  ]
-}`;
-            } else if (type === 'item') {
-                 const stage = document.getElementById('sbQuestStage').value;
-                 const iid = document.getElementById('sbQuestItemId').value;
-                 const count = document.getElementById('sbQuestItemCount').value;
-                 const succ = document.getElementById('sbQuestSuccess').value || "Thank you!";
-                 const fail = document.getElementById('sbQuestFail').value || "You don't have the items.";
-                 const itemCondition = `{ "type": "hasItem", "baseItemId": ${iid}, "amount": ${count} }`;
-                 const combinedCondition = levelCondition
-                    ? `{ "type": "and", "conditions": [ ${itemCondition}, ${levelCondition} ] }`
-                    : itemCondition;
-                 const actions = [
-                     `{ "type": "removeItem", "baseItemId": ${iid}, "amount": ${count} }`,
-                     `{ "type": "quest", "set": { "quest": ${qid}, "stage": ${stage} } }`,
-                     ...rewardActions,
-                     `{ "type": "npcSay", "message": ${JSON.stringify(succ)} }`
-                 ];
-                 
-                 json = `{
-  "condition": {
-    ${combinedCondition.slice(1, -1)}
-  },
-  "action": {
-    "type": "array",
-    "actions": [
-      ${actions.join(',\n      ')}
-    ]
-  },
-  "else": {
-    "type": "npcSay",
-    "message": ${JSON.stringify(fail)}
-  }
-}`;
-            } else if (type === 'set') {
-                const stage = document.getElementById('sbQuestStage').value;
-                const msg = document.getElementById('sbQuestSimpleText').value;
-                const actions = [
-                    `{ "type": "npcSay", "message": ${JSON.stringify(msg)} }`,
-                    `{ "type": "quest", "set": { "quest": ${qid}, "stage": ${stage} } }`,
-                    ...rewardActions
-                ];
-                const conditionBlock = levelCondition
-                    ? `  "condition": ${levelCondition},\n${levelElse ? `  "else": ${levelElse},\n` : ''}`
-                    : '';
-                json = `{
-${conditionBlock}
-  "type": "array",
-  "actions": [
-      ${actions.join(',\n      ')}
-  ]
-}`;
-            } else if (type === 'remove') {
-                const msg = document.getElementById('sbQuestSimpleText').value;
-                const actions = [
-                    `{ "type": "npcSay", "message": ${JSON.stringify(msg)} }`,
-                    `{ "type": "quest", "remove": ${qid} }`,
-                    ...rewardActions
-                ];
-                const conditionBlock = levelCondition
-                    ? `  "condition": ${levelCondition},\n${levelElse ? `  "else": ${levelElse},\n` : ''}`
-                    : '';
-                json = `{
-${conditionBlock}
-  "type": "array",
-  "actions": [
-      ${actions.join(',\n      ')}
-  ]
-}`;
+
+            const acceptAction = {
+                type: 'npcSay',
+                message: acceptMsg || 'Quest accepted.'
+            };
+            if (onCloseActions.length > 0) {
+                acceptAction.onClose = onCloseActions;
             }
-            appendToScript(json);
+
+            const detailsOptions = [
+                {
+                    text: detailsAcceptText,
+                    action: acceptAction
+                }
+            ];
+            if (detailsDeclineMsg) {
+                detailsOptions.push({
+                    text: detailsDeclineText,
+                    action: {
+                        type: 'npcSay',
+                        message: detailsDeclineMsg
+                    }
+                });
+            }
+
+            const acceptFlow = detailsMessage
+                ? {
+                    type: 'npcSay',
+                    message: detailsMessage,
+                    options: detailsOptions
+                }
+                : acceptAction;
+
+            const topOptions = [
+                {
+                    text: acceptText,
+                    action: acceptFlow
+                }
+            ];
+
+            if (declineMsg) {
+                topOptions.push({
+                    text: declineText,
+                    action: {
+                        type: 'npcSay',
+                        message: declineMsg
+                    }
+                });
+            }
+
+            const script = {
+                type: 'npcSay',
+                message: introMsg,
+                options: topOptions
+            };
+
+            if (requireNotStarted) {
+                script.condition = {
+                    type: 'quest',
+                    quest: questId,
+                    not: true
+                };
+            }
+
+            if (elseMsg) {
+                script.else = {
+                    type: 'npcSay',
+                    message: elseMsg
+                };
+            }
+
+            appendToScript(JSON.stringify(script, null, 2));
             bootstrap.Modal.getInstance(document.getElementById('scriptBuilderModal')).hide();
         }
 
