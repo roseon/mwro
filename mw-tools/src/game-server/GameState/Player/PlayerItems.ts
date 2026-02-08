@@ -148,6 +148,10 @@ export class PlayerItems {
 			case ItemType.Usable:
 				item.action?.execute(createClientContext(this.player.client));
 				return;
+			case ItemType.Quest:
+				if (!item.action) return;
+				this.consumeItemAndSend(index);
+				return;
 			default:
 				Logger.error('Item has unknown type', item);
 				throw Error('Item has unknown type ' + item.type);

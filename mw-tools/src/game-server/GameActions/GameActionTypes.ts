@@ -99,6 +99,10 @@ export type GameActionPetExp = GameActionBase<'petExp'> & {
 
 export type GameActionPetResetExp = GameActionBase<'petResetExp'> & {};
 
+export type GameActionPetResetLevel = GameActionBase<'petResetLevel'> & {};
+
+export type GameActionPetResetLoyalty = GameActionBase<'petResetLoyalty'> & {};
+
 export type GameActionPetResetStats = GameActionBase<'petResetStats'> & {};
 
 export type GameActionPetResetGrowth = GameActionBase<'petResetGrowth'> & {};
@@ -223,6 +227,8 @@ export type GameActionSingle =
 	| GameActionExp
 	| GameActionPetExp
 	| GameActionPetResetExp
+	| GameActionPetResetLevel
+	| GameActionPetResetLoyalty
 	| GameActionPetResetStats
 	| GameActionPetResetGrowth
 	| GameActionPetAddGrowth
