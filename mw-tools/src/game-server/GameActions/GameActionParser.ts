@@ -25,6 +25,12 @@ import { AddItemPropsExecutable } from './Actions/AddItemPropsExecutable';
 import { BankExecutable } from './Actions/BankExecutable';
 import { ShapeShiftExecutable } from './Actions/ShapeShiftExecutable';
 import { MonsterRepelExecutable } from './Actions/MonsterRepelExecutable';
+import { PetResetExpExecutable } from './Actions/PetResetExpExecutable';
+import { PetResetStatsExecutable } from './Actions/PetResetStatsExecutable';
+import { PetResetGrowthExecutable } from './Actions/PetResetGrowthExecutable';
+import { PetAddGrowthExecutable } from './Actions/PetAddGrowthExecutable';
+import { PetAddResistExecutable } from './Actions/PetAddResistExecutable';
+import { PetResetResistExecutable } from './Actions/PetResetResistExecutable';
 
 export abstract class GameActionParser {
 	/**
@@ -64,6 +70,12 @@ export abstract class GameActionParser {
 				return HealExecutable.parse(action);
 			case 'exp':
 				return AddExpExecutable.parse(action);
+			case 'petExp':
+				return AddExpExecutable.parse({
+					...action,
+					type: 'exp',
+					pet: true,
+				});
 			case 'monster':
 				return AddMonsterExecutable.parse(action);
 			case 'quest':
@@ -96,6 +108,18 @@ export abstract class GameActionParser {
 				return ShapeShiftExecutable.parse(action);
 			case 'monsterRepel':
 				return MonsterRepelExecutable.parse(action);
+			case 'petResetExp':
+				return PetResetExpExecutable.parse(action);
+			case 'petResetStats':
+				return PetResetStatsExecutable.parse(action);
+			case 'petResetGrowth':
+				return PetResetGrowthExecutable.parse(action);
+			case 'petAddGrowth':
+				return PetAddGrowthExecutable.parse(action);
+			case 'petAddResist':
+				return PetAddResistExecutable.parse(action);
+			case 'petResetResist':
+				return PetResetResistExecutable.parse(action);
 			default:
 				Logger.error('Action type not implemented', action);
 				throw Error('Action type not implemented.');

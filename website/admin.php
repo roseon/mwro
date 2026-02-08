@@ -124,10 +124,16 @@ if (isset($_POST['action']) && ($_POST['action'] === 'save_item')) {
     $gender = ($_POST['gender'] ?? '') !== '' ? intval($_POST['gender']) : null;
     $petId = ($_POST['pet_id'] ?? '') !== '' ? intval($_POST['pet_id']) : null;
     $canConvert = isset($_POST['can_convert']);
-    $supportedSlotsStr = trim($_POST['supported_slots'] ?? '');
+    $supportedSlotsRaw = $_POST['supported_slots'] ?? '';
     $statsJson = trim($_POST['stats_json'] ?? '');
     $actionJson = trim($_POST['action_json'] ?? '');
     $itemPropertiesJson = trim($_POST['item_properties_json'] ?? '');
+    $statKeys = $_POST['stat_key'] ?? [];
+    $statValues = $_POST['stat_value'] ?? [];
+    $actionKeys = $_POST['action_key'] ?? [];
+    $actionValues = $_POST['action_value'] ?? [];
+    $itemPropKeys = $_POST['item_prop_key'] ?? [];
+    $itemPropValues = $_POST['item_prop_value'] ?? [];
     $statsHp = intval($_POST['stats_hp'] ?? 0);
     $statsMp = intval($_POST['stats_mp'] ?? 0);
     $statsStr = intval($_POST['stats_str'] ?? 0);
@@ -141,6 +147,42 @@ if (isset($_POST['action']) && ($_POST['action'] === 'save_item')) {
             $activeTab = 'items';
         } else {
             $stats = $decodedStats;
+        }
+    }
+
+    if ($statsJson === '' && (!empty($statKeys) || !empty($statValues))) {
+        $statsPayload = [];
+        foreach ($statKeys as $idx => $key) {
+            $key = trim($key);
+            if ($key === '') continue;
+            $statsPayload[$key] = $statValues[$idx] ?? '';
+        }
+        if (!empty($statsPayload)) {
+            $statsJson = json_encode($statsPayload);
+        }
+    }
+
+    if ($actionJson === '' && (!empty($actionKeys) || !empty($actionValues))) {
+        $actionPayload = [];
+        foreach ($actionKeys as $idx => $key) {
+            $key = trim($key);
+            if ($key === '') continue;
+            $actionPayload[$key] = $actionValues[$idx] ?? '';
+        }
+        if (!empty($actionPayload)) {
+            $actionJson = json_encode($actionPayload);
+        }
+    }
+
+    if ($itemPropertiesJson === '' && (!empty($itemPropKeys) || !empty($itemPropValues))) {
+        $propsPayload = [];
+        foreach ($itemPropKeys as $idx => $key) {
+            $key = trim($key);
+            if ($key === '') continue;
+            $propsPayload[$key] = $itemPropValues[$idx] ?? '';
+        }
+        if (!empty($propsPayload)) {
+            $itemPropertiesJson = json_encode($propsPayload);
         }
     }
 
@@ -167,10 +209,15 @@ if (isset($_POST['action']) && ($_POST['action'] === 'save_item')) {
     }
 
     $supportedSlots = null;
-    if ($supportedSlotsStr !== '') {
-        $supportedSlots = array_values(
-            array_filter(array_map('intval', explode(',', $supportedSlotsStr)), fn($v) => $v !== 0 || $supportedSlotsStr === '0')
-        );
+    if (is_array($supportedSlotsRaw)) {
+        $supportedSlots = array_values(array_unique(array_map('intval', $supportedSlotsRaw)));
+    } else {
+        $supportedSlotsStr = trim($supportedSlotsRaw);
+        if ($supportedSlotsStr !== '') {
+            $supportedSlots = array_values(
+                array_filter(array_map('intval', explode(',', $supportedSlotsStr)), fn($v) => $v !== 0 || $supportedSlotsStr === '0')
+            );
+        }
     }
 
     if ($error) {
@@ -1086,13 +1133,13 @@ sort($npcImages);
                                         $paddedFileId = str_pad((string)$fileId, 3, '0', STR_PAD_LEFT);
                                         $img = "assets/img/items/{$paddedFileId}.png";
                                         if (file_exists($img)) {
-                                            echo "<img src='$img' width='32' height='32' alt='Icon'>";
+                                            echo "<img src='$img' width='32' height='32' alt='Icon' title='ID: {$fileId}'>";
                                         } else {
                                             $fallbackImg = "assets/img/items/{$fileId}.png";
                                             if (file_exists($fallbackImg)) {
-                                                echo "<img src='$fallbackImg' width='32' height='32' alt='Icon'>";
+                                                echo "<img src='$fallbackImg' width='32' height='32' alt='Icon' title='ID: {$fileId}'>";
                                             } else {
-                                                echo "<span class='text-muted'>{$fileId}</span>";
+                                                echo "<span class='text-muted' title='ID: {$fileId}'>{$fileId}</span>";
                                             }
                                         }
                                     ?>
@@ -1339,6 +1386,48 @@ sort($npcImages);
                             </div>
                         </div>
                     </div>
+                        <datalist id="itemStatKeys">
+                            <option value="hp"></option>
+                            <option value="mp"></option>
+                            <option value="str"></option>
+                            <option value="attack"></option>
+                            <option value="speed"></option>
+                            <option value="int"></option>
+                            <option value="agi"></option>
+                            <option value="defense"></option>
+                            <option value="hitRate"></option>
+                            <option value="dodgeRate"></option>
+                            <option value="critRate"></option>
+                            <option value="critDamage"></option>
+                        </datalist>
+                        <datalist id="itemActionKeys">
+                            <option value="type"></option>
+                            <option value="baseItemId"></option>
+                            <option value="amount"></option>
+                            <option value="hp"></option>
+                            <option value="mp"></option>
+                            <option value="exp"></option>
+                            <option value="gold"></option>
+                            <option value="pet"></option>
+                            <option value="growthRate"></option>
+                            <option value="resist"></option>
+                            <option value="template"></option>
+                            <option value="mapId"></option>
+                            <option value="x"></option>
+                            <option value="y"></option>
+                            <option value="message"></option>
+                            <option value="options"></option>
+                            <option value="onClose"></option>
+                        </datalist>
+                        <datalist id="itemPropertyKeys">
+                            <option value="bindLocation"></option>
+                            <option value="map"></option>
+                            <option value="x"></option>
+                            <option value="y"></option>
+                            <option value="limit"></option>
+                            <option value="cooldown"></option>
+                            <option value="duration"></option>
+                        </datalist>
                 </div>
             </div>
         </div>
@@ -1460,13 +1549,38 @@ sort($npcImages);
                 <div class="modal-header"><h5 class="modal-title">Item Editor</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-md-6 mb-3"><label>ID</label><input type="number" name="item_id" id="itemId" class="form-control" required></div>
+                        <div class="col-md-6 mb-3">
+                            <label>ID</label>
+                            <input type="number" name="item_id" id="itemId" class="form-control" required>
+                            <div class="form-text text-warning" id="itemIdWarning" style="display:none;"></div>
+                        </div>
                         <div class="col-md-6 mb-3"><label>Name</label><input type="text" name="name" id="itemName" class="form-control" required></div>
                         <div class="col-md-12 mb-3"><label>Description</label><textarea name="description" id="itemDesc" class="form-control"></textarea></div>
                         <div class="col-md-4 mb-3"><label>File/Icon ID</label><input type="number" name="file" id="itemFile" class="form-control"></div>
-                        <div class="col-md-4 mb-3"><label>Type</label><input type="number" name="type" id="itemType" class="form-control"></div>
+                        <div class="col-md-4 mb-3">
+                            <label>Type</label>
+                            <select name="type" id="itemType" class="form-select">
+                                <option value="0">None</option>
+                                <option value="1">Equipment</option>
+                                <option value="2">Consumable</option>
+                                <option value="3">Usable</option>
+                                <option value="4">Quest</option>
+                            </select>
+                        </div>
                         <div class="col-md-4 mb-3"><label>Stack Limit</label><input type="number" name="stack_limit" id="itemStack" class="form-control" value="1"></div>
-                        <div class="col-md-4 mb-3"><label>Equipment Slot</label><input type="number" name="equipment_slot" id="itemEquipSlot" class="form-control"></div>
+                        <div class="col-md-4 mb-3">
+                            <label>Equipment Slot</label>
+                            <select name="equipment_slot" id="itemEquipSlot" class="form-select">
+                                <option value="">None</option>
+                                <option value="0">Head</option>
+                                <option value="1">Armour</option>
+                                <option value="2">Weapon</option>
+                                <option value="3">Shoes</option>
+                                <option value="4">Necklace</option>
+                                <option value="5">Bracelet</option>
+                                <option value="6">Ring</option>
+                            </select>
+                        </div>
                         <div class="col-md-4 mb-3"><label>Level Req</label><input type="number" name="level" id="itemLevel" class="form-control"></div>
                         <div class="col-md-4 mb-3">
                             <label>Pet ID</label>
@@ -1477,9 +1591,37 @@ sort($npcImages);
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3"><label>Race</label><input type="number" name="race" id="itemRace" class="form-control"></div>
-                        <div class="col-md-4 mb-3"><label>Gender</label><input type="number" name="gender" id="itemGender" class="form-control"></div>
-                        <div class="col-md-4 mb-3"><label>Supported Slots</label><input type="text" name="supported_slots" id="itemSupportedSlots" class="form-control" placeholder="e.g. 1,2,3"></div>
+                        <div class="col-md-4 mb-3">
+                            <label>Race</label>
+                            <select name="race" id="itemRace" class="form-select">
+                                <option value="">Any</option>
+                                <option value="0">Human</option>
+                                <option value="1">Centaur</option>
+                                <option value="2">Mage</option>
+                                <option value="3">Borg</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Gender</label>
+                            <select name="gender" id="itemGender" class="form-select">
+                                <option value="">Any</option>
+                                <option value="0">Male</option>
+                                <option value="1">Female</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Supported Slots</label>
+                            <select name="supported_slots[]" id="itemSupportedSlots" class="form-select" multiple>
+                                <option value="">None</option>
+                                <option value="0">Head</option>
+                                <option value="1">Armour</option>
+                                <option value="2">Weapon</option>
+                                <option value="3">Shoes</option>
+                                <option value="4">Necklace</option>
+                                <option value="5">Bracelet</option>
+                                <option value="6">Ring</option>
+                            </select>
+                        </div>
                         <div class="col-md-4 mb-3 form-check">
                             <input type="checkbox" name="quest_item" id="itemQuest" class="form-check-input">
                             <label class="form-check-label" for="itemQuest">Quest Item</label>
@@ -1492,17 +1634,55 @@ sort($npcImages);
                         <div class="col-md-4 mb-2"><label>HP</label><input type="number" name="stats_hp" id="itemHp" class="form-control"></div>
                         <div class="col-md-4 mb-2"><label>MP</label><input type="number" name="stats_mp" id="itemMp" class="form-control"></div>
                         <div class="col-md-4 mb-2"><label>STR</label><input type="number" name="stats_str" id="itemStr" class="form-control"></div>
-                        <div class="col-md-12 mb-2">
-                            <label>Stats JSON (optional)</label>
-                            <textarea name="stats_json" id="itemStatsJson" class="form-control" rows="2" placeholder='{"attack":5,"speed":1}'></textarea>
+                        <div class="col-md-12">
+                            <h6 class="mt-2">Stat Builder</h6>
+                            <div class="table-responsive">
+                                <table class="table table-dark table-sm align-middle mb-2" id="itemStatsTable">
+                                    <thead><tr><th style="width:45%">Key</th><th style="width:45%">Value</th><th style="width:10%"></th></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addItemStatRow()">Add Stat Field</button>
                         </div>
-                        <div class="col-md-12 mb-2">
-                            <label>Action JSON (optional)</label>
-                            <textarea name="action_json" id="itemActionJson" class="form-control" rows="2" placeholder='{"type":"heal","hp":100}'></textarea>
+                        <div class="col-md-12">
+                            <h6 class="mt-2">Action Builder</h6>
+                            <div class="table-responsive">
+                                <table class="table table-dark table-sm align-middle mb-2" id="itemActionTable">
+                                    <thead><tr><th style="width:45%">Key</th><th style="width:45%">Value</th><th style="width:10%"></th></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addItemActionRow()">Add Action Field</button>
                         </div>
-                        <div class="col-md-12 mb-2">
-                            <label>Item Properties JSON (optional)</label>
-                            <textarea name="item_properties_json" id="itemPropsJson" class="form-control" rows="2" placeholder='{"bindLocation":{"map":1,"x":10,"y":10}}'></textarea>
+                        <div class="col-md-12">
+                            <h6 class="mt-3">Item Properties Builder</h6>
+                            <div class="table-responsive">
+                                <table class="table table-dark table-sm align-middle mb-2" id="itemPropsTable">
+                                    <thead><tr><th style="width:45%">Key</th><th style="width:45%">Value</th><th style="width:10%"></th></tr></thead>
+                                    <tbody></tbody>
+                                </table>
+                            </div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addItemPropRow()">Add Property Field</button>
+                        </div>
+                        <div class="col-md-12 mt-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label class="mb-0">Advanced JSON</label>
+                                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#itemJsonAdvanced">Toggle</button>
+                            </div>
+                            <div class="collapse mt-2" id="itemJsonAdvanced">
+                                <div class="mb-2">
+                                    <label>Stats JSON (optional)</label>
+                                    <textarea name="stats_json" id="itemStatsJson" class="form-control" rows="2" placeholder='{"attack":5,"speed":1}'></textarea>
+                                </div>
+                                <div class="mb-2">
+                                    <label>Action JSON (optional)</label>
+                                    <textarea name="action_json" id="itemActionJson" class="form-control" rows="2" placeholder='{"type":"heal","hp":100}'></textarea>
+                                </div>
+                                <div class="mb-2">
+                                    <label>Item Properties JSON (optional)</label>
+                                    <textarea name="item_properties_json" id="itemPropsJson" class="form-control" rows="2" placeholder='{"bindLocation":{"map":1,"x":10,"y":10}}'></textarea>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1744,6 +1924,7 @@ sort($npcImages);
         const npcs = <?php echo json_encode($npcs); ?>;
         const quests = <?php echo json_encode($quests); ?>;
         const mapsData = <?php echo json_encode($maps); ?>;
+        const itemsData = <?php echo json_encode(array_map(fn($item) => $item['data'], $items)); ?>;
         const mapsMap = {};
         mapsData.forEach(m => mapsMap[m.map] = m);
         
@@ -1845,7 +2026,7 @@ sort($npcImages);
             document.getElementById('itemPetId').value = '';
             document.getElementById('itemRace').value = '';
             document.getElementById('itemGender').value = '';
-            document.getElementById('itemSupportedSlots').value = '';
+            document.getElementById('itemSupportedSlots').selectedIndex = -1;
             document.getElementById('itemQuest').checked = false;
             document.getElementById('itemCanConvert').checked = false;
             document.getElementById('itemHp').value = '';
@@ -1854,6 +2035,10 @@ sort($npcImages);
             document.getElementById('itemStatsJson').value = '';
             document.getElementById('itemActionJson').value = '';
             document.getElementById('itemPropsJson').value = '';
+            toggleItemIdWarning(false);
+            resetItemStatRows();
+            resetItemActionRows();
+            resetItemPropRows();
         }
         
         function editItem(data) {
@@ -1868,7 +2053,11 @@ sort($npcImages);
             document.getElementById('itemPetId').value = data.petId ?? '';
             document.getElementById('itemRace').value = data.race ?? '';
             document.getElementById('itemGender').value = data.gender ?? '';
-            document.getElementById('itemSupportedSlots').value = (data.supportedEquipmentSlots || []).join(',');
+            const supportedSlots = data.supportedEquipmentSlots || [];
+            const supportedSelect = document.getElementById('itemSupportedSlots');
+            Array.from(supportedSelect.options).forEach(option => {
+                option.selected = supportedSlots.includes(parseInt(option.value, 10));
+            });
             document.getElementById('itemQuest').checked = !!data.questItem;
             document.getElementById('itemCanConvert').checked = !!data.canConvert;
             document.getElementById('itemHp').value = data.stats?.hp || 0;
@@ -1877,7 +2066,173 @@ sort($npcImages);
             document.getElementById('itemStatsJson').value = data.stats ? JSON.stringify(data.stats, null, 2) : '';
             document.getElementById('itemActionJson').value = data.action ? JSON.stringify(data.action, null, 2) : '';
             document.getElementById('itemPropsJson').value = data.itemProperties ? JSON.stringify(data.itemProperties, null, 2) : '';
+            toggleItemIdWarning(false);
+            renderItemStatRows(data.stats || {});
+            renderItemKeyValueRows('#itemActionTable tbody', data.action || {});
+            renderItemKeyValueRows('#itemPropsTable tbody', data.itemProperties || {});
             new bootstrap.Modal(document.getElementById('itemModal')).show();
+        }
+
+        const itemIdMap = itemsData.reduce((acc, item) => {
+            if (item && typeof item.id !== 'undefined') {
+                acc[item.id] = item;
+            }
+            return acc;
+        }, {});
+
+        function toggleItemIdWarning(show, text = '') {
+            const warning = document.getElementById('itemIdWarning');
+            if (!warning) return;
+            warning.textContent = text;
+            warning.style.display = show ? 'block' : 'none';
+        }
+
+        function checkItemIdExists() {
+            const input = document.getElementById('itemId');
+            if (!input) return;
+            const id = parseInt(input.value, 10);
+            if (Number.isNaN(id)) {
+                toggleItemIdWarning(false);
+                return;
+            }
+            if (itemIdMap[id]) {
+                toggleItemIdWarning(true, `Item ID ${id} already exists. Use Edit to update it.`);
+            } else {
+                toggleItemIdWarning(false);
+            }
+        }
+
+        function resetItemStatRows() {
+            const tbody = document.querySelector('#itemStatsTable tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            addItemStatRow();
+        }
+
+        function addItemStatRow(key = '', value = '') {
+            const tbody = document.querySelector('#itemStatsTable tbody');
+            if (!tbody) return;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" name="stat_key[]" class="form-control form-control-sm" value="${key}" list="itemStatKeys"></td>
+                <td><input type="text" name="stat_value[]" class="form-control form-control-sm" value="${value}"></td>
+                <td><button type="button" class="btn btn-sm btn-outline-danger">X</button></td>
+            `;
+            row.querySelector('button').addEventListener('click', () => row.remove());
+            tbody.appendChild(row);
+        }
+
+        function renderItemStatRows(stats) {
+            const tbody = document.querySelector('#itemStatsTable tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            const entries = stats && typeof stats === 'object' ? Object.entries(stats) : [];
+            const filtered = entries.filter(([key]) => !['hp', 'mp', 'str'].includes(key));
+            if (filtered.length === 0) {
+                addItemStatRow();
+                return;
+            }
+            filtered.forEach(([key, value]) => addItemStatRow(key, value));
+        }
+
+        function resetItemActionRows() {
+            const tbody = document.querySelector('#itemActionTable tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            addItemActionRow();
+        }
+
+        function resetItemPropRows() {
+            const tbody = document.querySelector('#itemPropsTable tbody');
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            addItemPropRow();
+        }
+
+        function addItemActionRow(key = '', value = '') {
+            const tbody = document.querySelector('#itemActionTable tbody');
+            if (!tbody) return;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" name="action_key[]" class="form-control form-control-sm" value="${key}" list="itemActionKeys"></td>
+                <td><input type="text" name="action_value[]" class="form-control form-control-sm" value="${value}"></td>
+                <td><button type="button" class="btn btn-sm btn-outline-danger">X</button></td>
+            `;
+            row.querySelector('button').addEventListener('click', () => row.remove());
+            tbody.appendChild(row);
+        }
+
+        function addItemPropRow(key = '', value = '') {
+            const tbody = document.querySelector('#itemPropsTable tbody');
+            if (!tbody) return;
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><input type="text" name="item_prop_key[]" class="form-control form-control-sm" value="${key}" list="itemPropertyKeys"></td>
+                <td><input type="text" name="item_prop_value[]" class="form-control form-control-sm" value="${value}"></td>
+                <td><button type="button" class="btn btn-sm btn-outline-danger">X</button></td>
+            `;
+            row.querySelector('button').addEventListener('click', () => row.remove());
+            tbody.appendChild(row);
+        }
+
+        function renderItemKeyValueRows(selector, data) {
+            const tbody = document.querySelector(selector);
+            if (!tbody) return;
+            tbody.innerHTML = '';
+            const entries = data && typeof data === 'object' ? Object.entries(data) : [];
+            if (entries.length === 0) {
+                if (selector.includes('itemActionTable')) addItemActionRow();
+                else addItemPropRow();
+                return;
+            }
+            entries.forEach(([key, value]) => {
+                if (selector.includes('itemActionTable')) addItemActionRow(key, value);
+                else addItemPropRow(key, value);
+            });
+        }
+
+        function serializeItemStructuredFields() {
+            const statsJsonEl = document.getElementById('itemStatsJson');
+            if (statsJsonEl && statsJsonEl.value.trim() === '') {
+                const stats = {};
+                const hpVal = document.getElementById('itemHp').value;
+                const mpVal = document.getElementById('itemMp').value;
+                const strVal = document.getElementById('itemStr').value;
+                if (hpVal !== '') stats.hp = parseFloat(hpVal);
+                if (mpVal !== '') stats.mp = parseFloat(mpVal);
+                if (strVal !== '') stats.str = parseFloat(strVal);
+                document.querySelectorAll('#itemStatsTable tbody tr').forEach(row => {
+                    const key = row.querySelector('input[name="stat_key[]"]')?.value?.trim();
+                    if (!key) return;
+                    const value = row.querySelector('input[name="stat_value[]"]')?.value ?? '';
+                    stats[key] = value;
+                });
+                if (Object.keys(stats).length > 0) {
+                    statsJsonEl.value = JSON.stringify(stats, null, 2);
+                }
+            }
+            const action = {};
+            document.querySelectorAll('#itemActionTable tbody tr').forEach(row => {
+                const key = row.querySelector('input[name="action_key[]"]')?.value?.trim();
+                if (!key) return;
+                const value = row.querySelector('input[name="action_value[]"]')?.value ?? '';
+                action[key] = value;
+            });
+
+            const props = {};
+            document.querySelectorAll('#itemPropsTable tbody tr').forEach(row => {
+                const key = row.querySelector('input[name="item_prop_key[]"]')?.value?.trim();
+                if (!key) return;
+                const value = row.querySelector('input[name="item_prop_value[]"]')?.value ?? '';
+                props[key] = value;
+            });
+
+            if (Object.keys(action).length > 0) {
+                document.getElementById('itemActionJson').value = JSON.stringify(action, null, 2);
+            }
+            if (Object.keys(props).length > 0) {
+                document.getElementById('itemPropsJson').value = JSON.stringify(props, null, 2);
+            }
         }
 
         function filterItems() {
@@ -3156,8 +3511,22 @@ sort($npcImages);
                 serializePetStructuredFields();
             });
         }
+        const itemForm = document.querySelector('#itemModal form');
+        if (itemForm) {
+            itemForm.addEventListener('submit', () => {
+                serializeItemStructuredFields();
+            });
+        }
+        const itemIdInput = document.getElementById('itemId');
+        if (itemIdInput) {
+            itemIdInput.addEventListener('input', checkItemIdExists);
+            itemIdInput.addEventListener('blur', checkItemIdExists);
+        }
         resetResistRows();
         resetSkillRows();
+        resetItemStatRows();
+        resetItemActionRows();
+        resetItemPropRows();
         const savedItemSearch = localStorage.getItem('itemSearch');
         if (savedItemSearch) {
             const searchInput = document.getElementById('itemSearch');

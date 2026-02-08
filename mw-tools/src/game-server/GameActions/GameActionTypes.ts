@@ -2,6 +2,7 @@ import type { PetTemplate } from '../Data/PetTemplates';
 import type { ItemProperties } from '../Database/Collections/BaseItem/BaseItemTypes';
 import { FightStatJson } from '../GameState/Fight/FightStats';
 import type { RandomJson } from '../Utils/Random';
+import type { ResistJson } from '../GameState/Resist';
 import type { GameCondition } from './GameConditionTypes';
 
 type GameActionBase<TType extends string> =
@@ -91,6 +92,26 @@ export type GameActionExp = GameActionBase<'exp'> & {
 	amount: number | RandomJson;
 	pet?: boolean;
 };
+
+export type GameActionPetExp = GameActionBase<'petExp'> & {
+	amount: number | RandomJson;
+};
+
+export type GameActionPetResetExp = GameActionBase<'petResetExp'> & {};
+
+export type GameActionPetResetStats = GameActionBase<'petResetStats'> & {};
+
+export type GameActionPetResetGrowth = GameActionBase<'petResetGrowth'> & {};
+
+export type GameActionPetAddGrowth = GameActionBase<'petAddGrowth'> & {
+	amount: number;
+};
+
+export type GameActionPetAddResist = GameActionBase<'petAddResist'> & {
+	resist: Partial<ResistJson>;
+};
+
+export type GameActionPetResetResist = GameActionBase<'petResetResist'> & {};
 
 export type GameActionMonster = GameActionBase<'monster'> & {};
 
@@ -200,6 +221,13 @@ export type GameActionSingle =
 	| GameActionBank
 	| GameActionHeal
 	| GameActionExp
+	| GameActionPetExp
+	| GameActionPetResetExp
+	| GameActionPetResetStats
+	| GameActionPetResetGrowth
+	| GameActionPetAddGrowth
+	| GameActionPetAddResist
+	| GameActionPetResetResist
 	| GameActionMonster
 	| GameActionQuest
 	| GameActionAddItem
