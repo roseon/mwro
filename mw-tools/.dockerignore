@@ -1,0 +1,13 @@
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+*.code-workspace
+.history
+
+node_modules
+
+/build
+/client
+/output
+/server.config.json
+/notes

@@ -1,0 +1,12 @@
+version: "3.9"  # optional since v1.27.0
+
+services:
+  mythwar:
+    image: "registry.gitlab.com/wander-gr/mw-tools:latest"
+    container_name: "Mythwar"
+    restart: always
+    network_mode: "host"
+    volumes:
+      - "./client:/app/client:rw"
+      - "./server.config.json:/app/server.config.json:ro"
+      - "./build:/app/build:rw"

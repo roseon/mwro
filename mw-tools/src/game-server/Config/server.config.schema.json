@@ -1,0 +1,90 @@
+{
+	"$schema": "http://json-schema.org/schema",
+	"type": "object",
+	"additionalProperties": false,
+	"properties": {
+		"$schema": {
+			"type": "string"
+		},
+		"world": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"ip": {
+					"type": "string"
+				},
+				"port": {
+					"type": "number"
+				}
+			}
+		},
+		"chat": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"ip": {
+					"type": "string"
+				},
+				"port": {
+					"type": "number"
+				}
+			}
+		},
+		"databaseType": {
+			"type": "string",
+			"enum": ["file", "couchbase", "mysql"]
+		},
+		"mysql": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"host": {
+					"type": "string"
+				},
+				"port": {
+					"type": "number"
+				},
+				"user": {
+					"type": "string"
+				},
+				"password": {
+					"type": "string"
+				},
+				"database": {
+					"type": "string"
+				}
+			}
+		},
+		"couchbase": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"host": {
+					"type": "string"
+				},
+				"username": {
+					"type": "string"
+				},
+				"password": {
+					"type": "string"
+				}
+			}
+		},
+		"security": {
+			"type": "object",
+			"additionalProperties": false,
+			"properties": {
+				"globalSalt": {
+					"type": "string",
+					"minLength": 10,
+					"maxLength": 20
+				}
+			}
+		},
+		"modifiers": {
+			"gold": "number",
+			"exp": "number",
+			"skill": "number"
+		}
+	}
+}

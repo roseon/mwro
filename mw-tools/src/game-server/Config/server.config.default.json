@@ -1,0 +1,32 @@
+{
+	"$schema": "./server.config.schema.json",
+	"world": {
+		"ip": "127.0.0.1",
+		"port": 9008
+	},
+	"chat": {
+		"ip": "127.0.0.1",
+		"port": 9009
+	},
+	"databaseType": "mysql",
+	"mysql": {
+		"host": "localhost",
+		"port": 3306,
+		"user": "root",
+		"password": "",
+		"database": "MythWarServer"
+	},
+	"couchbase": {
+		"host": "127.0.0.1",
+		"username": "Administrator",
+		"password": ""
+	},
+	"security": {
+		"globalSalt": "Ch@ngeInPr0duct1on:)"
+	},
+	"modifiers": {
+		"gold": 1,
+		"exp": 1,
+		"skill": 1
+	}
+}

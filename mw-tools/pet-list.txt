@@ -1,0 +1,101 @@
+# runtimeId	petId	name
+1342177283	278	Flame Phoenix
+1342177284	159	Dream Dragon
+1342177285	280	Glitter Tiger
+1342177287	202	Bloodpede
+1342177288	205	Ant Eater
+1342177289	202	Bloodpede
+1342177290	202	Bloodpede
+
+# runtimeId is blank for templates without a runtime instance
+	159	Dream Dragon
+	160	Dream Flyer
+	183	Pisces
+	201	Ghost Warrior
+	202	Bloodpede
+	203	Flyer
+	205	Ant Eater
+	206	Leopard Wolf
+	206	Snow Wolf
+	207	Earth Wolf
+	207	Greater Wolf
+	208	Werewolf
+	209	Mummy
+	210	Sand Giant
+	211	Evil Skeletal
+	211	Skeletal
+	212	Chaotic Devil
+	213	Chaos Devil
+	214	Desert Bandit
+	215	Fog Spirit
+	215	Wicked Spirit
+	217	Big Crab
+	217	Glimmer Fish
+	218	Demon Punisher
+	219	Evil Mudraper
+	219	Mudraper
+	220	Chaos Wisp
+	220	Ghoul
+	221	Giantslicer
+	222	Teethor
+	223	Nepenthes
+	224	Lizard Bandit
+	224	Lizard Man
+	224	Lizard Miner
+	225	Lycosa
+	226	Aurora Lion
+	227	Thorn Spider
+	228	Berserker
+	228	Evil Wolf
+	228	Feral Wolf
+	228	Howling Beast
+	229	Stone Giant
+	230	Cyclops
+	231	Felsworn
+	231	Ice Demon
+	232	Big Foot
+	232	Dark Giant
+	233	Evil Fire Demon
+	233	Fire Demon
+	234	Hell Phoenix
+	234	Phoenix
+	235	Hell Cat
+	235	Spirit Cat
+	236	Mosquito
+	237	Bee
+	237	Killer Bee
+	238	Guard
+	238	Withered Guard
+	239	Axewalker
+	240	Hell Gardener
+	241	Ghoulspirit
+	241	Stone Ghost
+	242	Scarecrow
+	243	Dark Dream
+	243	Hell Protector
+	243	River Beast
+	243	River Guardian
+	244	Eyekicker
+	245	Demon Dragon
+	246	Tree Demon
+	248	Ghastly Dragon
+	250	Crazy Bandit
+	251	Snake Demon
+	252	Mad Ogrewalker
+	252	Ogrewalker
+	253	Bog Nightmare
+	254	Capilla
+	254	Holy Dragon
+	255	Centaur King
+	272	Santa Claus
+	273	Santa Princess
+	274	Snow Bear
+	275	Snowie
+	276	Chinchilla
+	276	Chinchilla
+	277	Stone Tortoise
+	278	Flame Phoenix
+	279	Ocean Loong
+	280	Glitter Tiger
+	281	Capricornus
+	282	Aquarius

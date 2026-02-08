@@ -1,0 +1,781 @@
+1\tSword of Whatever
+1000\tBroken Broom
+1001\tLeaf
+1002\tFixed Broom
+1003\tMokka
+2000\tDevil's Tears
+3000\tLost Item
+3001\tMokka
+10001\tApple
+10002\tBanana
+10003\tLychee
+10004\tPear
+10005\tPine
+10006\tCoconut
+10007\tSmall HP Potion
+10008\tMedium HP Potion
+10009\tLarge HP Potion
+10010\tSmall MP Potion
+10011\tMedium MP Potion
+10012\tLarge MP Potion
+10013\tSmall Purple Potion
+10014\tMedium Purple Potion
+10015\tLarge Purple Potion
+10016\tGraded Apple
+10017\tGraded Pear
+10018\tGraded Banana
+10019\tGraded Pine
+10020\tGraded Lychee
+10021\tGraded Coconut
+10022\tDrumstick
+10023\tSucculent Meat
+10024\tHam
+10025\tSushi
+10026\tLamb Rib
+10027\tFull HP
+10028\tFull MP
+11000\tSanctuary Wing
+11001\tTown Scroll
+11002\tDungeon Scroll
+11003\tDesolate Scroll
+11004\tWasteland Scroll
+11005\tScroll of Return
+20001\tSmall Iron Ore
+20002\tMedium Iron Ore
+20003\tLarge Iron Ore
+20004\tSmall Copper Ore
+20005\tMedium Copper Ore
+20006\tLarge Copper Ore
+20007\tSmall Gold Ore
+20008\tMedium Gold Ore
+20009\tLarge Gold Ore
+30101\tBlack Gem +1
+30102\tBlack Gem +2
+30103\tBlack Gem +3
+30104\tBlack Gem +4
+30105\tBlack Gem +5
+30106\tBlack Gem +6
+30107\tBlack Gem +7
+30108\tBlack Gem +8
+30109\tBlack Gem +9
+30110\tBlack Gem +10
+30111\tBlack Gem +11
+30112\tBlack Gem +12
+30113\tBlack Gem +13
+30114\tBlack Gem +14
+30115\tBlack Gem +15
+30201\tEmerald +1
+30202\tEmerald +2
+30203\tEmerald +3
+30204\tEmerald +4
+30205\tEmerald +5
+30206\tEmerald +6
+30207\tEmerald +7
+30208\tEmerald +8
+30209\tEmerald +9
+30210\tEmerald +10
+30211\tEmerald +11
+30212\tEmerald +12
+30213\tEmerald +13
+30214\tEmerald +14
+30215\tEmerald +15
+30301\tMoonstone +1
+30302\tMoonstone +2
+30303\tMoonstone +3
+30304\tMoonstone +4
+30305\tMoonstone +5
+30306\tMoonstone +6
+30307\tMoonstone +7
+30308\tMoonstone +8
+30309\tMoonstone +9
+30310\tMoonstone +10
+30311\tMoonstone +11
+30312\tMoonstone +12
+30313\tMoonstone +13
+30314\tMoonstone +14
+30315\tMoonstone +15
+30401\tRuby +1
+30402\tRuby +2
+30403\tRuby +3
+30404\tRuby +4
+30405\tRuby +5
+30406\tRuby +6
+30407\tRuby +7
+30408\tRuby +8
+30409\tRuby +9
+30410\tRuby +10
+30411\tRuby +11
+30412\tRuby +12
+30413\tRuby +13
+30414\tRuby +14
+30415\tRuby +15
+30501\tSapphire +1
+30502\tSapphire +2
+30503\tSapphire +3
+30504\tSapphire +4
+30505\tSapphire +5
+30506\tSapphire +6
+30507\tSapphire +7
+30508\tSapphire +8
+30509\tSapphire +9
+30510\tSapphire +10
+30511\tSapphire +11
+30512\tSapphire +12
+30513\tSapphire +13
+30514\tSapphire +14
+30515\tSapphire +15
+30601\tSoul Gem +1
+30602\tSoul Gem +2
+30603\tSoul Gem +3
+30604\tSoul Gem +4
+30605\tSoul Gem +5
+30606\tSoul Gem +6
+30607\tSoul Gem +7
+30608\tSoul Gem +8
+30609\tSoul Gem +9
+30610\tSoul Gem +10
+30611\tSoul Gem +11
+30612\tSoul Gem +12
+30613\tSoul Gem +13
+30614\tSoul Gem +14
+30615\tSoul Gem +15
+30701\tShadow Gem +1
+30702\tShadow Gem +2
+30703\tShadow Gem +3
+30704\tShadow Gem +4
+30705\tShadow Gem +5
+30706\tShadow Gem +6
+30707\tShadow Gem +7
+30708\tShadow Gem +8
+30709\tShadow Gem +9
+30710\tShadow Gem +10
+30711\tShadow Gem +11
+30712\tShadow Gem +12
+30713\tShadow Gem +13
+30714\tShadow Gem +14
+30715\tShadow Gem +15
+30801\tPhantasm Gem +1
+30802\tPhantasm Gem +2
+30803\tPhantasm Gem +3
+30804\tPhantasm Gem +4
+30805\tPhantasm Gem +5
+30806\tPhantasm Gem +6
+30807\tPhantasm Gem +7
+30808\tPhantasm Gem +8
+30809\tPhantasm Gem +9
+30810\tPhantasm Gem +10
+30811\tPhantasm Gem +11
+30812\tPhantasm Gem +12
+30813\tPhantasm Gem +13
+30814\tPhantasm Gem +14
+30815\tPhantasm Gem +15
+30901\tFire Gem +1
+30902\tFire Gem +2
+30903\tFire Gem +3
+30904\tFire Gem +4
+30905\tFire Gem +5
+30906\tFire Gem +6
+30907\tFire Gem +7
+30908\tFire Gem +8
+30909\tFire Gem +9
+30910\tFire Gem +10
+30911\tFire Gem +11
+30912\tFire Gem +12
+30913\tFire Gem +13
+30914\tFire Gem +14
+30915\tFire Gem +15
+31001\tPurple Gem +1
+31002\tPurple Gem +2
+31003\tPurple Gem +3
+31004\tPurple Gem +4
+31005\tPurple Gem +5
+31006\tPurple Gem +6
+31007\tPurple Gem +7
+31008\tPurple Gem +8
+31009\tPurple Gem +9
+31010\tPurple Gem +10
+31011\tPurple Gem +11
+31012\tPurple Gem +12
+31013\tPurple Gem +13
+31014\tPurple Gem +14
+31015\tPurple Gem +15
+31101\tGlimmering Gem +1
+31102\tGlimmering Gem +2
+31103\tGlimmering Gem +3
+31104\tGlimmering Gem +4
+31105\tGlimmering Gem +5
+31106\tGlimmering Gem +6
+31107\tGlimmering Gem +7
+31108\tGlimmering Gem +8
+31109\tGlimmering Gem +9
+31110\tGlimmering Gem +10
+31111\tGlimmering Gem +11
+31112\tGlimmering Gem +12
+31113\tGlimmering Gem +13
+31114\tGlimmering Gem +14
+31115\tGlimmering Gem +15
+32101\tBlack Diamond +1
+32102\tBlack Diamond +1
+32103\tBlack Diamond +2
+32104\tBlack Diamond +2
+32105\tBlack Diamond +3
+32106\tBlack Diamond +3
+32107\tBlack Diamond +4
+32108\tBlack Diamond +4
+32109\tBlack Diamond +5
+32110\tBlack Diamond +5
+32111\tBlack Diamond +6
+32112\tBlack Diamond +6
+32113\tBlack Diamond +7
+32114\tBlack Diamond +7
+32115\tBlack Diamond +8
+32116\tBlack Diamond +8
+32117\tBlack Diamond +9
+32118\tBlack Diamond +9
+32119\tBlack Diamond +10
+32120\tBlack Diamond +10
+32121\tBlack Diamond +11
+32122\tBlack Diamond +11
+32123\tBlack Diamond +12
+32124\tBlack Diamond +12
+32125\tBlack Diamond +13
+32126\tBlack Diamond +13
+32127\tBlack Diamond +14
+32128\tBlack Diamond +14
+32129\tBlack Diamond +15
+32130\tBlack Diamond +15
+32201\tGreen Diamond +1
+32202\tGreen Diamond +1
+32203\tGreen Diamond +2
+32204\tGreen Diamond +2
+32205\tGreen Diamond +3
+32206\tGreen Diamond +3
+32207\tGreen Diamond +4
+32208\tGreen Diamond +4
+32209\tGreen Diamond +5
+32210\tGreen Diamond +5
+32211\tGreen Diamond +6
+32212\tGreen Diamond +6
+32213\tGreen Diamond +7
+32214\tGreen Diamond +7
+32215\tGreen Diamond +8
+32216\tGreen Diamond +8
+32217\tGreen Diamond +9
+32218\tGreen Diamond +9
+32219\tGreen Diamond +10
+32220\tGreen Diamond +10
+32221\tGreen Diamond +11
+32222\tGreen Diamond +11
+32223\tGreen Diamond +12
+32224\tGreen Diamond +12
+32225\tGreen Diamond +13
+32226\tGreen Diamond +13
+32227\tGreen Diamond +14
+32228\tGreen Diamond +14
+32229\tGreen Diamond +15
+32230\tGreen Diamond +15
+32301\tSilver Diamond +1
+32302\tSilver Diamond +1
+32303\tSilver Diamond +2
+32304\tSilver Diamond +2
+32305\tSilver Diamond +3
+32306\tSilver Diamond +3
+32307\tSilver Diamond +4
+32308\tSilver Diamond +4
+32309\tSilver Diamond +5
+32310\tSilver Diamond +5
+32311\tSilver Diamond +6
+32312\tSilver Diamond +6
+32313\tSilver Diamond +7
+32314\tSilver Diamond +7
+32315\tSilver Diamond +8
+32316\tSilver Diamond +8
+32317\tSilver Diamond +9
+32318\tSilver Diamond +9
+32319\tSilver Diamond +10
+32320\tSilver Diamond +10
+32321\tSilver Diamond +11
+32322\tSilver Diamond +11
+32323\tSilver Diamond +12
+32324\tSilver Diamond +12
+32325\tSilver Diamond +13
+32326\tSilver Diamond +13
+32327\tSilver Diamond +14
+32328\tSilver Diamond +14
+32329\tSilver Diamond +15
+32330\tSilver Diamond +15
+32401\tRed Diamond +1
+32402\tRed Diamond +1
+32403\tRed Diamond +2
+32404\tRed Diamond +2
+32405\tRed Diamond +3
+32406\tRed Diamond +3
+32407\tRed Diamond +4
+32408\tRed Diamond +4
+32409\tRed Diamond +5
+32410\tRed Diamond +5
+32411\tRed Diamond +6
+32412\tRed Diamond +6
+32413\tRed Diamond +7
+32414\tRed Diamond +7
+32415\tRed Diamond +8
+32416\tRed Diamond +8
+32417\tRed Diamond +9
+32418\tRed Diamond +9
+32419\tRed Diamond +10
+32420\tRed Diamond +10
+32421\tRed Diamond +11
+32422\tRed Diamond +11
+32423\tRed Diamond +12
+32424\tRed Diamond +12
+32425\tRed Diamond +13
+32426\tRed Diamond +13
+32427\tRed Diamond +14
+32428\tRed Diamond +14
+32429\tRed Diamond +15
+32430\tRed Diamond +15
+32501\tBlue Diamond +1
+32502\tBlue Diamond +1
+32503\tBlue Diamond +2
+32504\tBlue Diamond +2
+32505\tBlue Diamond +3
+32506\tBlue Diamond +3
+32507\tBlue Diamond +4
+32508\tBlue Diamond +4
+32509\tBlue Diamond +5
+32510\tBlue Diamond +5
+32511\tBlue Diamond +6
+32512\tBlue Diamond +6
+32513\tBlue Diamond +7
+32514\tBlue Diamond +7
+32515\tBlue Diamond +8
+32516\tBlue Diamond +8
+32517\tBlue Diamond +9
+32518\tBlue Diamond +9
+32519\tBlue Diamond +10
+32520\tBlue Diamond +10
+32521\tBlue Diamond +11
+32522\tBlue Diamond +11
+32523\tBlue Diamond +12
+32524\tBlue Diamond +12
+32525\tBlue Diamond +13
+32526\tBlue Diamond +13
+32527\tBlue Diamond +14
+32528\tBlue Diamond +14
+32529\tBlue Diamond +15
+32530\tBlue Diamond +15
+32601\tGold Diamond +1
+32602\tGold Diamond +2
+32603\tGold Diamond +3
+32604\tGold Diamond +4
+32605\tGold Diamond +5
+32606\tGold Diamond +6
+32607\tGold Diamond +7
+32608\tGold Diamond +8
+32609\tGold Diamond +9
+32610\tGold Diamond +10
+32611\tGold Diamond +11
+32612\tGold Diamond +12
+32613\tGold Diamond +13
+32614\tGold Diamond +14
+32615\tGold Diamond +15
+32801\tYellow Diamond +1
+32802\tYellow Diamond +2
+32803\tYellow Diamond +3
+32804\tYellow Diamond +4
+32805\tYellow Diamond +5
+32806\tYellow Diamond +6
+32807\tYellow Diamond +7
+32808\tYellow Diamond +8
+32809\tYellow Diamond +9
+32810\tYellow Diamond +10
+32811\tYellow Diamond +11
+32812\tYellow Diamond +12
+32813\tYellow Diamond +13
+32814\tYellow Diamond +14
+32815\tYellow Diamond +15
+60000\tPet Egg
+60159\tPet Egg
+60160\tPet Egg
+60202\tPet Egg
+60203\tPet Egg
+60205\tPet Egg
+60206\tPet Egg
+60207\tPet Egg
+60208\tPet Egg
+60209\tPet Egg
+60210\tPet Egg
+60211\tPet Egg
+60212\tPet Egg
+60213\tPet Egg
+60214\tPet Egg
+60215\tPet Egg
+60217\tPet Egg
+60218\tPet Egg
+60219\tPet Egg
+60220\tPet Egg
+60222\tPet Egg
+60223\tPet Egg
+60224\tPet Egg
+60225\tPet Egg
+60226\tPet Egg
+60227\tPet Egg
+60228\tPet Egg
+60229\tPet Egg
+60230\tPet Egg
+60231\tPet Egg
+60232\tPet Egg
+60233\tPet Egg
+60234\tPet Egg
+60235\tPet Egg
+60236\tPet Egg
+60237\tPet Egg
+60238\tPet Egg
+60239\tPet Egg
+60241\tPet Egg
+60242\tPet Egg
+60243\tPet Egg
+60244\tPet Egg
+60245\tPet Egg
+60246\tPet Egg
+60250\tPet Egg
+60251\tPet Egg
+60252\tPet Egg
+60253\tPet Egg
+60254\tPet Egg
+60255\tPet Egg
+60272\tPet Egg
+60273\tPet Egg
+60274\tPet Egg
+60275\tPet Egg
+60276\tPet Egg
+60277\tPet Egg
+60278\tPet Egg
+60279\tPet Egg
+60281\tPet Egg
+60282\tPet Egg
+60283\tPet Egg
+400001\tHelm of Radiant
+400002\tHelm of Radiant +2
+400003\tHelm of Radiant +3
+400004\tHelm of Radiant +4
+400005\tHelm of Radiant +5
+400006\tHelm of Radiant +6
+400007\tHelm of Radiant +7
+400008\tHelm of Radiant +8
+400009\tHelm of Radiant +9
+400010\tHelm of Radiant +10
+400101\tBand of Angelic
+400102\tBand of Angelic +2
+400103\tBand of Angelic +3
+400104\tBand of Angelic +4
+400105\tBand of Angelic +5
+400106\tBand of Angelic +6
+400107\tBand of Angelic +7
+400108\tBand of Angelic +8
+400109\tBand of Angelic +9
+400110\tBand of Angelic +10
+400201\tHelm of Shadow
+400202\tHelm of Shadow +2
+400203\tHelm of Shadow +3
+400204\tHelm of Shadow +4
+400205\tHelm of Shadow +5
+400206\tHelm of Shadow +6
+400207\tHelm of Shadow +7
+400208\tHelm of Shadow +8
+400209\tHelm of Shadow +9
+400210\tHelm of Shadow +10
+400301\tHelm of Wrath
+400302\tHelm of Wrath +2
+400303\tHelm of Wrath +3
+400304\tHelm of Wrath +4
+400305\tHelm of Wrath +5
+400306\tHelm of Wrath +6
+400307\tHelm of Wrath +7
+400308\tHelm of Wrath +8
+400309\tHelm of Wrath +9
+400310\tHelm of Wrath +10
+401001\tHelm of Oceanic
+401002\tHelm of Oceanic +2
+401003\tHelm of Oceanic +3
+401004\tHelm of Oceanic +4
+401005\tHelm of Oceanic +5
+401006\tHelm of Oceanic +6
+401007\tHelm of Oceanic +7
+401008\tHelm of Oceanic +8
+401009\tHelm of Oceanic +9
+401010\tHelm of Oceanic +10
+401101\tBand of Blessing
+401102\tBand of Blessing +2
+401103\tBand of Blessing +3
+401104\tBand of Blessing +4
+401105\tBand of Blessing +5
+401106\tBand of Blessing +6
+401107\tBand of Blessing +7
+401108\tBand of Blessing +8
+401109\tBand of Blessing +9
+401110\tBand of Blessing +10
+401201\tHelm of Thunder
+401202\tHelm of Thunder +2
+401203\tHelm of Thunder +3
+401204\tHelm of Thunder +4
+401205\tHelm of Thunder +5
+401206\tHelm of Thunder +6
+401207\tHelm of Thunder +7
+401208\tHelm of Thunder +8
+401209\tHelm of Thunder +9
+401210\tHelm of Thunder +10
+401301\tHelm of Dignity
+401302\tHelm of Dignity +2
+401303\tHelm of Dignity +3
+401304\tHelm of Dignity +4
+401305\tHelm of Dignity +5
+401306\tHelm of Dignity +6
+401307\tHelm of Dignity +7
+401308\tHelm of Dignity +8
+401309\tHelm of Dignity +9
+401320\tHelm of Dignity +10
+410001\tPlate of Radiant
+410002\tPlate of Radiant +2
+410003\tPlate of Radiant +3
+410004\tPlate of Radiant +4
+410005\tPlate of Radiant +5
+410006\tPlate of Radiant +6
+410007\tPlate of Radiant +7
+410008\tPlate of Radiant +8
+410009\tPlate of Radiant +9
+410010\tPlate of Radiant +10
+410101\tMail of Angelic
+410102\tMail of Angelic +2
+410103\tMail of Angelic +3
+410104\tMail of Angelic +4
+410105\tMail of Angelic +5
+410106\tMail of Angelic +6
+410107\tMail of Angelic +7
+410108\tMail of Angelic +8
+410109\tMail of Angelic +9
+410110\tMail of Angelic +10
+410201\tMail of Shadow
+410202\tMail of Shadow +2
+410203\tMail of Shadow +3
+410204\tMail of Shadow +4
+410205\tMail of Shadow +5
+410206\tMail of Shadow +6
+410207\tMail of Shadow +7
+410208\tMail of Shadow +8
+410209\tMail of Shadow +9
+410210\tMail of Shadow +10
+410301\tMail of Wrath
+410302\tMail of Wrath +2
+410303\tMail of Wrath +3
+410304\tMail of Wrath +4
+410305\tMail of Wrath +5
+410306\tMail of Wrath +6
+410307\tMail of Wrath +7
+410308\tMail of Wrath +8
+410309\tMail of Wrath +9
+410310\tMail of Wrath +10
+411001\tPlate of Oceanic
+411002\tPlate of Oceanic +2
+411003\tPlate of Oceanic +3
+411004\tPlate of Oceanic +4
+411005\tPlate of Oceanic +5
+411006\tPlate of Oceanic +6
+411007\tPlate of Oceanic +7
+411008\tPlate of Oceanic +8
+411009\tPlate of Oceanic +9
+411010\tPlate of Oceanic +10
+411101\tMail of Blessing
+411102\tMail of Blessing +2
+411103\tMail of Blessing +3
+411104\tMail of Blessing +4
+411105\tMail of Blessing +5
+411106\tMail of Blessing +6
+411107\tMail of Blessing +7
+411108\tMail of Blessing +8
+411109\tMail of Blessing +9
+411110\tMail of Blessing +10
+411201\tMail of Thunder
+411202\tMail of Thunder +2
+411203\tMail of Thunder +3
+411204\tMail of Thunder +4
+411205\tMail of Thunder +5
+411206\tMail of Thunder +6
+411207\tMail of Thunder +7
+411208\tMail of Thunder +8
+411209\tMail of Thunder +9
+411210\tMail of Thunder +10
+411301\tArmour of Dignity
+411302\tArmour of Dignity +2
+411303\tArmour of Dignity +3
+411304\tArmour of Dignity +4
+411305\tArmour of Dignity +5
+411306\tArmour of Dignity +6
+411307\tArmour of Dignity +7
+411308\tArmour of Dignity +8
+411309\tArmour of Dignity +9
+411320\tArmour of Dignity +10
+420001\tSword of Flame
+420002\tSword of Flame +2
+420003\tSword of Flame +3
+420004\tSword of Flame +4
+420005\tSword of Flame +5
+420006\tSword of Flame +6
+420007\tSword of Flame +7
+420008\tSword of Flame +8
+420009\tSword of Flame +9
+420010\tSword of Flame +10
+420101\tBow of Farsight
+420102\tBow of Farsight +2
+420103\tBow of Farsight +3
+420104\tBow of Farsight +4
+420105\tBow of Farsight +5
+420106\tBow of Farsight +6
+420107\tBow of Farsight +7
+420108\tBow of Farsight +8
+420109\tBow of Farsight +9
+420110\tBow of Farsight +10
+420201\tStaff of Light
+420202\tStaff of Light +2
+420203\tStaff of Light +3
+420204\tStaff of Light +4
+420205\tStaff of Light +5
+420206\tStaff of Light +6
+420207\tStaff of Light +7
+420208\tStaff of Light +8
+420209\tStaff of Light +9
+420210\tStaff of Light +10
+420301\tFist of Haze
+420302\tFist of Haze +2
+420303\tFist of Haze +3
+420304\tFist of Haze +4
+420305\tFist of Haze +5
+420306\tFist of Haze +6
+420307\tFist of Haze +7
+420308\tFist of Haze +8
+420309\tFist of Haze +9
+420310\tFist of Haze +10
+421001\tSword of Impale
+421002\tSword of Impale +2
+421003\tSword of Impale +3
+421004\tSword of Impale +4
+421005\tSword of Impale +5
+421006\tSword of Impale +6
+421007\tSword of Impale +7
+421008\tSword of Impale +8
+421009\tSword of Impale +9
+421010\tSword of Impale +10
+421101\tBow of Demonic
+421102\tBow of Demonic +2
+421103\tBow of Demonic +3
+421104\tBow of Demonic +4
+421105\tBow of Demonic +5
+421106\tBow of Demonic +6
+421107\tBow of Demonic +7
+421108\tBow of Demonic +8
+421109\tBow of Demonic +9
+421110\tBow of Demonic +10
+421201\tStaff of Demon
+421202\tStaff of Demon +2
+421203\tStaff of Demon +3
+421204\tStaff of Demon +4
+421205\tStaff of Demon +5
+421206\tStaff of Demon +6
+421207\tStaff of Demon +7
+421208\tStaff of Demon +8
+421209\tStaff of Demon +9
+421210\tStaff of Demon +10
+421301\tFist of Ravage
+421302\tFist of Ravage +2
+421303\tFist of Ravage +3
+421304\tFist of Ravage +4
+421305\tFist of Ravage +5
+421306\tFist of Ravage +6
+421307\tFist of Ravage +7
+421308\tFist of Ravage +8
+421309\tFist of Ravage +9
+421310\tFist of Ravage +10
+430001\tShoe of Radiant
+430002\tShoe of Radiant +2
+430003\tShoe of Radiant +3
+430004\tShoe of Radiant +4
+430005\tShoe of Radiant +5
+430006\tShoe of Radiant +6
+430007\tShoe of Radiant +7
+430008\tShoe of Radiant +8
+430009\tShoe of Radiant +9
+430010\tShoe of Radiant +10
+430101\tShoe of Angelic
+430102\tShoe of Angelic +2
+430103\tShoe of Angelic +3
+430104\tShoe of Angelic +4
+430105\tShoe of Angelic +5
+430106\tShoe of Angelic +6
+430107\tShoe of Angelic +7
+430108\tShoe of Angelic +8
+430109\tShoe of Angelic +9
+430110\tShoe of Angelic +10
+430201\tShoe of Shadow
+430202\tShoe of Shadow +2
+430203\tShoe of Shadow +3
+430204\tShoe of Shadow +4
+430205\tShoe of Shadow +5
+430206\tShoe of Shadow +6
+430207\tShoe of Shadow +7
+430208\tShoe of Shadow +8
+430209\tShoe of Shadow +9
+430210\tShoe of Shadow +10
+430301\tShoe of Wrath
+430302\tShoe of Wrath +2
+430303\tShoe of Wrath +3
+430304\tShoe of Wrath +4
+430305\tShoe of Wrath +5
+430306\tShoe of Wrath +6
+430307\tShoe of Wrath +7
+430308\tShoe of Wrath +8
+430309\tShoe of Wrath +9
+430310\tShoe of Wrath +10
+431001\tShoe of Oceanic
+431002\tShoe of Oceanic +2
+431003\tShoe of Oceanic +3
+431004\tShoe of Oceanic +4
+431005\tShoe of Oceanic +5
+431006\tShoe of Oceanic +6
+431007\tShoe of Oceanic +7
+431008\tShoe of Oceanic +8
+431009\tShoe of Oceanic +9
+431010\tShoe of Oceanic +10
+431101\tShoe of Blessing
+431102\tShoe of Blessing +2
+431103\tShoe of Blessing +3
+431104\tShoe of Blessing +4
+431105\tShoe of Blessing +5
+431106\tShoe of Blessing +6
+431107\tShoe of Blessing +7
+431108\tShoe of Blessing +8
+431109\tShoe of Blessing +9
+431110\tShoe of Blessing +10
+431201\tShoe of Thunder
+431202\tShoe of Thunder +2
+431203\tShoe of Thunder +3
+431204\tShoe of Thunder +4
+431205\tShoe of Thunder +5
+431206\tShoe of Thunder +6
+431207\tShoe of Thunder +7
+431208\tShoe of Thunder +8
+431209\tShoe of Thunder +9
+431210\tShoe of Thunder +10
+431301\tShoe of Dignity
+431302\tShoe of Dignity +2
+431303\tShoe of Dignity +3
+431304\tShoe of Dignity +4
+431305\tShoe of Dignity +5
+431306\tShoe of Dignity +6
+431307\tShoe of Dignity +7
+431308\tShoe of Dignity +8
+431309\tShoe of Dignity +9
+431320\tShoe of Dignity +10
+700000\tReductive Potion
+701201\tShapeshift Potion
+701205\tShapeshift Potion
+701226\tShapeshift Potion

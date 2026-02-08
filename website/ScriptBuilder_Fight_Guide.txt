@@ -1,0 +1,26 @@
+How to add a "Speech then Fight" sequence in the Script Builder
+
+1. Open the Admin Panel and navigate to the "NPCs" tab.
+2. Select an NPC or create a new one.
+3. Click the "Builder" button next to "Action Script (JSON)".
+4. (Optional) Enter the text in the "Speech" tab (e.g. "Do you dare to challenge the Felsworn?").
+5. Select the "Fight" tab.
+6. (Optional) You can override the message in "Challenge Message", or leave it blank to use the text from the Speech tab.
+7. Select "Felsworn Pet Fight" from the "Fight Template" dropdown.
+   - This corresponds to the 'battleFelswornFight' action template.
+8. Click "Insert Fight Logic".
+
+This will generate a single JSON block containing the message and the fight options.
+
+To avoid creating double messages:
+- Do NOT click "Insert Speech Block" in the Speech tab if you intend to add a Fight.
+- Just enter the text there, switch to Fight tab, and click "Insert Fight Logic".
+
+Technical Details:
+- The 'battleFelswornFight' template is defined in `mw-tools/src/game-server/GameActions/Actions/Templates/BattleFelswornFight.ts`.
+- It creates a fight against a 'felswornPet' (Monster ID defined in `MonsterTemplates.ts`).
+- It forces the Monster's HP to 34,000 as requested.
+- You can add more templates by:
+  1. Defining the monster in `MonsterTemplates.ts`.
+  2. Creating a new Template file (like `BattleFelswornFight.ts`).
+  3. Registering it in `ActionTemplateExecutable.ts`.
