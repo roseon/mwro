@@ -33,6 +33,7 @@ import { PetAddResistExecutable } from './Actions/PetAddResistExecutable';
 import { PetResetResistExecutable } from './Actions/PetResetResistExecutable';
 import { PetResetLevelExecutable } from './Actions/PetResetLevelExecutable';
 import { PetResetLoyaltyExecutable } from './Actions/PetResetLoyaltyExecutable';
+import { DecreaseStatsExecutable } from './Actions/DecreaseStatsExecutable';
 
 export abstract class GameActionParser {
 	/**
@@ -116,6 +117,8 @@ export abstract class GameActionParser {
 				return PetResetLevelExecutable.parse(action);
 			case 'petResetLoyalty':
 				return PetResetLoyaltyExecutable.parse(action);
+			case 'decreaseStats':
+				return DecreaseStatsExecutable.parse(action);
 			case 'petResetStats':
 				return PetResetStatsExecutable.parse(action);
 			case 'petResetGrowth':

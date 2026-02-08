@@ -1411,6 +1411,10 @@ sort($npcImages);
                             <option value="pet"></option>
                             <option value="growthRate"></option>
                             <option value="resist"></option>
+                            <option value="sta"></option>
+                            <option value="int"></option>
+                            <option value="str"></option>
+                            <option value="agi"></option>
                             <option value="template"></option>
                             <option value="mapId"></option>
                             <option value="x"></option>
@@ -1638,7 +1642,7 @@ sort($npcImages);
                             <h6 class="mt-2">Stat Builder</h6>
                             <div class="table-responsive">
                                 <table class="table table-dark table-sm align-middle mb-2" id="itemStatsTable">
-                                    <thead><tr><th style="width:45%">Key</th><th style="width:45%">Value</th><th style="width:10%"></th></tr></thead>
+                                    <thead><tr><th style="width:40%">Key</th><th style="width:35%">Value</th><th style="width:15%">Type</th><th style="width:10%"></th></tr></thead>
                                     <tbody></tbody>
                                 </table>
                             </div>
@@ -1646,9 +1650,60 @@ sort($npcImages);
                         </div>
                         <div class="col-md-12">
                             <h6 class="mt-2">Action Builder</h6>
+                            <div class="d-flex flex-wrap gap-2 align-items-end mb-2">
+                                <div>
+                                    <label class="form-label">Preset</label>
+                                    <select id="itemActionPreset" class="form-select form-select-sm">
+                                        <option value="">Select preset</option>
+                                        <option value="exp-player">Give Player EXP</option>
+                                        <option value="exp-pet">Give Pet EXP</option>
+                                        <option value="decrease-stats-player">Decrease Player Stats</option>
+                                        <option value="decrease-stats-pet">Decrease Pet Stats</option>
+                                        <option value="pet-reset-exp">Reset Pet EXP</option>
+                                        <option value="pet-reset-level">Reset Pet Level</option>
+                                        <option value="pet-reset-loyalty">Reset Pet Loyalty</option>
+                                        <option value="pet-reset-stats">Reset Pet Stats</option>
+                                        <option value="pet-reset-growth">Reset Pet Growth</option>
+                                        <option value="pet-add-growth">Add Pet Growth</option>
+                                        <option value="pet-add-resist">Add Pet Resist</option>
+                                        <option value="pet-reset-resist">Reset Pet Resist</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label">Amount</label>
+                                    <input type="number" id="itemActionPresetAmount" class="form-control form-control-sm" value="1">
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <div>
+                                        <label class="form-label">STA</label>
+                                        <input type="number" id="itemActionPresetSta" class="form-control form-control-sm" value="0">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">INT</label>
+                                        <input type="number" id="itemActionPresetInt" class="form-control form-control-sm" value="0">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">STR</label>
+                                        <input type="number" id="itemActionPresetStr" class="form-control form-control-sm" value="0">
+                                    </div>
+                                    <div>
+                                        <label class="form-label">AGI</label>
+                                        <input type="number" id="itemActionPresetAgi" class="form-control form-control-sm" value="0">
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label class="form-label">Stats JSON</label>
+                                    <input type="text" id="itemActionPresetStats" class="form-control form-control-sm" placeholder='{"sta":1,"int":0,"str":0,"agi":0}'>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label class="form-label">Resist JSON</label>
+                                    <input type="text" id="itemActionPresetResist" class="form-control form-control-sm" placeholder='{"hitRate":5}'>
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-info" onclick="applyItemActionPreset()">Apply</button>
+                            </div>
                             <div class="table-responsive">
                                 <table class="table table-dark table-sm align-middle mb-2" id="itemActionTable">
-                                    <thead><tr><th style="width:45%">Key</th><th style="width:45%">Value</th><th style="width:10%"></th></tr></thead>
+                                    <thead><tr><th style="width:40%">Key</th><th style="width:35%">Value</th><th style="width:15%">Type</th><th style="width:10%"></th></tr></thead>
                                     <tbody></tbody>
                                 </table>
                             </div>
@@ -1658,7 +1713,7 @@ sort($npcImages);
                             <h6 class="mt-3">Item Properties Builder</h6>
                             <div class="table-responsive">
                                 <table class="table table-dark table-sm align-middle mb-2" id="itemPropsTable">
-                                    <thead><tr><th style="width:45%">Key</th><th style="width:45%">Value</th><th style="width:10%"></th></tr></thead>
+                                    <thead><tr><th style="width:40%">Key</th><th style="width:35%">Value</th><th style="width:15%">Type</th><th style="width:10%"></th></tr></thead>
                                     <tbody></tbody>
                                 </table>
                             </div>
@@ -2109,15 +2164,25 @@ sort($npcImages);
             addItemStatRow();
         }
 
-        function addItemStatRow(key = '', value = '') {
+        function addItemStatRow(key = '', value = '', valueType = 'string') {
             const tbody = document.querySelector('#itemStatsTable tbody');
             if (!tbody) return;
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td><input type="text" name="stat_key[]" class="form-control form-control-sm" value="${key}" list="itemStatKeys"></td>
                 <td><input type="text" name="stat_value[]" class="form-control form-control-sm" value="${value}"></td>
+                <td>
+                    <select name="stat_value_type[]" class="form-select form-select-sm">
+                        <option value="string">string</option>
+                        <option value="number">number</option>
+                        <option value="boolean">boolean</option>
+                        <option value="json">json</option>
+                    </select>
+                </td>
                 <td><button type="button" class="btn btn-sm btn-outline-danger">X</button></td>
             `;
+            const typeSelect = row.querySelector('select[name="stat_value_type[]"]');
+            if (typeSelect) typeSelect.value = valueType;
             row.querySelector('button').addEventListener('click', () => row.remove());
             tbody.appendChild(row);
         }
@@ -2132,7 +2197,11 @@ sort($npcImages);
                 addItemStatRow();
                 return;
             }
-            filtered.forEach(([key, value]) => addItemStatRow(key, value));
+            filtered.forEach(([key, value]) => {
+                const inferredType = inferValueType(value);
+                const displayValue = inferredType === 'json' ? JSON.stringify(value) : value;
+                addItemStatRow(key, displayValue, inferredType);
+            });
         }
 
         function resetItemActionRows() {
@@ -2149,28 +2218,48 @@ sort($npcImages);
             addItemPropRow();
         }
 
-        function addItemActionRow(key = '', value = '') {
+        function addItemActionRow(key = '', value = '', valueType = 'string') {
             const tbody = document.querySelector('#itemActionTable tbody');
             if (!tbody) return;
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td><input type="text" name="action_key[]" class="form-control form-control-sm" value="${key}" list="itemActionKeys"></td>
                 <td><input type="text" name="action_value[]" class="form-control form-control-sm" value="${value}"></td>
+                <td>
+                    <select name="action_value_type[]" class="form-select form-select-sm">
+                        <option value="string">string</option>
+                        <option value="number">number</option>
+                        <option value="boolean">boolean</option>
+                        <option value="json">json</option>
+                    </select>
+                </td>
                 <td><button type="button" class="btn btn-sm btn-outline-danger">X</button></td>
             `;
+            const typeSelect = row.querySelector('select[name="action_value_type[]"]');
+            if (typeSelect) typeSelect.value = valueType;
             row.querySelector('button').addEventListener('click', () => row.remove());
             tbody.appendChild(row);
         }
 
-        function addItemPropRow(key = '', value = '') {
+        function addItemPropRow(key = '', value = '', valueType = 'string') {
             const tbody = document.querySelector('#itemPropsTable tbody');
             if (!tbody) return;
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td><input type="text" name="item_prop_key[]" class="form-control form-control-sm" value="${key}" list="itemPropertyKeys"></td>
                 <td><input type="text" name="item_prop_value[]" class="form-control form-control-sm" value="${value}"></td>
+                <td>
+                    <select name="item_prop_value_type[]" class="form-select form-select-sm">
+                        <option value="string">string</option>
+                        <option value="number">number</option>
+                        <option value="boolean">boolean</option>
+                        <option value="json">json</option>
+                    </select>
+                </td>
                 <td><button type="button" class="btn btn-sm btn-outline-danger">X</button></td>
             `;
+            const typeSelect = row.querySelector('select[name="item_prop_value_type[]"]');
+            if (typeSelect) typeSelect.value = valueType;
             row.querySelector('button').addEventListener('click', () => row.remove());
             tbody.appendChild(row);
         }
@@ -2186,28 +2275,150 @@ sort($npcImages);
                 return;
             }
             entries.forEach(([key, value]) => {
-                if (selector.includes('itemActionTable')) addItemActionRow(key, value);
-                else addItemPropRow(key, value);
+                const inferredType = inferValueType(value);
+                const displayValue = inferredType === 'json' ? JSON.stringify(value) : value;
+                if (selector.includes('itemActionTable')) addItemActionRow(key, displayValue, inferredType);
+                else addItemPropRow(key, displayValue, inferredType);
             });
+        }
+
+        function inferValueType(value) {
+            if (typeof value === 'boolean') return 'boolean';
+            if (typeof value === 'number') return 'number';
+            if (value !== null && typeof value === 'object') return 'json';
+            return 'string';
+        }
+
+        function parseTypedValue(rawValue, valueType) {
+            const trimmed = String(rawValue ?? '').trim();
+            switch (valueType) {
+                case 'number':
+                    return trimmed === '' ? 0 : Number(trimmed);
+                case 'boolean':
+                    return trimmed === 'true' || trimmed === '1';
+                case 'json':
+                    if (trimmed === '') return {};
+                    return JSON.parse(trimmed);
+                default:
+                    return trimmed;
+            }
+        }
+
+        function applyItemActionPreset() {
+            const preset = document.getElementById('itemActionPreset')?.value;
+            if (!preset) return;
+
+            const amountRaw = document.getElementById('itemActionPresetAmount')?.value ?? '0';
+            const amount = parseFloat(amountRaw);
+            const resistRaw = document.getElementById('itemActionPresetResist')?.value?.trim() || '';
+            const statsRaw = document.getElementById('itemActionPresetStats')?.value?.trim() || '';
+            const staRaw = document.getElementById('itemActionPresetSta')?.value ?? '0';
+            const intRaw = document.getElementById('itemActionPresetInt')?.value ?? '0';
+            const strRaw = document.getElementById('itemActionPresetStr')?.value ?? '0';
+            const agiRaw = document.getElementById('itemActionPresetAgi')?.value ?? '0';
+            let action = null;
+
+            switch (preset) {
+                case 'exp-player':
+                    action = { type: 'exp', amount: Number.isNaN(amount) ? 0 : amount };
+                    break;
+                case 'exp-pet':
+                    action = { type: 'petExp', amount: Number.isNaN(amount) ? 0 : amount };
+                    break;
+                case 'decrease-stats-player':
+                case 'decrease-stats-pet':
+                    try {
+                        const stats = statsRaw
+                            ? JSON.parse(statsRaw)
+                            : {
+                                sta: Number(staRaw) || 0,
+                                int: Number(intRaw) || 0,
+                                str: Number(strRaw) || 0,
+                                agi: Number(agiRaw) || 0,
+                            };
+                        action = {
+                            type: 'decreaseStats',
+                            ...(stats || {}),
+                            ...(preset === 'decrease-stats-pet' ? { pet: true } : {}),
+                        };
+                    } catch (e) {
+                        alert('Invalid Stats JSON.');
+                        return;
+                    }
+                    break;
+                case 'pet-reset-exp':
+                    action = { type: 'petResetExp' };
+                    break;
+                case 'pet-reset-level':
+                    action = { type: 'petResetLevel' };
+                    break;
+                case 'pet-reset-loyalty':
+                    action = { type: 'petResetLoyalty' };
+                    break;
+                case 'pet-reset-stats':
+                    action = { type: 'petResetStats' };
+                    break;
+                case 'pet-reset-growth':
+                    action = { type: 'petResetGrowth' };
+                    break;
+                case 'pet-add-growth':
+                    action = { type: 'petAddGrowth', amount: Number.isNaN(amount) ? 0 : amount };
+                    break;
+                case 'pet-add-resist':
+                    try {
+                        action = { type: 'petAddResist', resist: resistRaw ? JSON.parse(resistRaw) : {} };
+                    } catch (e) {
+                        alert('Invalid Resist JSON.');
+                        return;
+                    }
+                    break;
+                case 'pet-reset-resist':
+                    action = { type: 'petResetResist' };
+                    break;
+                default:
+                    return;
+            }
+
+            const actionJsonEl = document.getElementById('itemActionJson');
+            if (actionJsonEl) {
+                actionJsonEl.value = JSON.stringify(action, null, 2);
+            }
+            resetItemActionRows();
         }
 
         function serializeItemStructuredFields() {
             const statsJsonEl = document.getElementById('itemStatsJson');
-            if (statsJsonEl && statsJsonEl.value.trim() === '') {
+            if (statsJsonEl) {
                 const stats = {};
+                let hasStats = false;
                 const hpVal = document.getElementById('itemHp').value;
                 const mpVal = document.getElementById('itemMp').value;
                 const strVal = document.getElementById('itemStr').value;
-                if (hpVal !== '') stats.hp = parseFloat(hpVal);
-                if (mpVal !== '') stats.mp = parseFloat(mpVal);
-                if (strVal !== '') stats.str = parseFloat(strVal);
+                if (hpVal !== '') {
+                    stats.hp = parseFloat(hpVal);
+                    hasStats = true;
+                }
+                if (mpVal !== '') {
+                    stats.mp = parseFloat(mpVal);
+                    hasStats = true;
+                }
+                if (strVal !== '') {
+                    stats.str = parseFloat(strVal);
+                    hasStats = true;
+                }
                 document.querySelectorAll('#itemStatsTable tbody tr').forEach(row => {
                     const key = row.querySelector('input[name="stat_key[]"]')?.value?.trim();
                     if (!key) return;
                     const value = row.querySelector('input[name="stat_value[]"]')?.value ?? '';
-                    stats[key] = value;
+                    const valueType = row.querySelector('select[name="stat_value_type[]"]')?.value || 'string';
+                    try {
+                        stats[key] = parseTypedValue(value, valueType);
+                        hasStats = true;
+                    } catch (e) {
+                        alert('Invalid stat value for ' + key + '.');
+                    }
                 });
-                if (Object.keys(stats).length > 0) {
+                if (hasStats) {
                     statsJsonEl.value = JSON.stringify(stats, null, 2);
                 }
             }
@@ -2216,7 +2427,12 @@ sort($npcImages);
                 const key = row.querySelector('input[name="action_key[]"]')?.value?.trim();
                 if (!key) return;
                 const value = row.querySelector('input[name="action_value[]"]')?.value ?? '';
-                action[key] = value;
+                const valueType = row.querySelector('select[name="action_value_type[]"]')?.value || 'string';
+                try {
+                    action[key] = parseTypedValue(value, valueType);
+                } catch (e) {
+                    alert('Invalid action value for ' + key + '.');
+                }
             });
 
             const props = {};
@@ -2224,7 +2440,12 @@ sort($npcImages);
                 const key = row.querySelector('input[name="item_prop_key[]"]')?.value?.trim();
                 if (!key) return;
                 const value = row.querySelector('input[name="item_prop_value[]"]')?.value ?? '';
-                props[key] = value;
+                const valueType = row.querySelector('select[name="item_prop_value_type[]"]')?.value || 'string';
+                try {
+                    props[key] = parseTypedValue(value, valueType);
+                } catch (e) {
+                    alert('Invalid item property value for ' + key + '.');
+                }
             });
 
             if (Object.keys(action).length > 0) {
