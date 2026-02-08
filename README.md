@@ -1,6 +1,7 @@
 # mwro
 # Myth War Online Website + Server Setup
-
+Credit for Starting the Project (Wander) (https://gitlab.com/wander-gr/mw-tools)
+Second Support (St3rkr) (https://gitlab.com/Luigi311/mw-tools)
 This repository contains the game server (`mw-tools`) and the website (`website`). The website uses the same database as the server, so both setups should point to the same DB.
 
 ## Prerequisites
