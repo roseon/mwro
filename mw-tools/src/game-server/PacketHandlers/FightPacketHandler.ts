@@ -1,5 +1,10 @@
 import { getPacketType } from '../PacketReader';
 import { PacketType } from '../PacketType';
+import { FightCreator } from '../GameState/Fight/FightCreator';
+import { FightType } from '../Enums/FightType';
+import { Fight } from '../GameState/Fight/Fight';
+import { MessagePackets } from '../Responses/MessagePackets';
+import { Player } from '../GameState/Player/Player';
 import type { PlayerConnection } from '../Server/Game/GameConnection';
 import type { PacketConnection } from '../Server/Packet/PacketConnection';
 import { AbstractPacketHandler } from './AbstractPacketHandler';
@@ -38,6 +43,9 @@ export class FightPacketHandler extends AbstractPacketHandler {
 				break;
 			case PacketType.FightPetAction:
 				this.onFightPetAction(packet, client);
+				break;
+			case PacketType.PlayerAttack:
+				this.onPlayerAttack(packet, client);
 				break;
 			case PacketType.FightClosed:
 				this.onFightClosed(packet, client);
@@ -119,5 +127,61 @@ export class FightPacketHandler extends AbstractPacketHandler {
 		fight?.endWaiter?.check(client.player);
 
 		client.player?.playerCollection?.updatePlayer(client.player);
+	}
+
+	/**
+	 * Client requests a player attack (PVP).
+	 * @param packet
+	 * @param client
+	 */
+	private onPlayerAttack(packet: Buffer, client: PlayerConnection): void {
+		const attacker = client.player;
+		const map = attacker.mapData.map;
+		const targetOffsets = [12, 16, 20];
+		let target: Player | null = null;
+		let targetId = 0;
+
+		for (const offset of targetOffsets) {
+			if (packet.length < offset + 4) continue;
+			const candidateId = packet.readUInt32LE(offset);
+			const candidate = map.players.get(candidateId) ?? null;
+			if (candidate && candidate.id !== attacker.id) {
+				target = candidate;
+				targetId = candidateId;
+				break;
+			}
+		}
+
+		if (!target || target.id === attacker.id) return;
+		if (attacker.fightData.currentFight || target.fightData.currentFight) {
+			client.write(MessagePackets.showSystem('Target is already in a fight.'));
+			return;
+		}
+		if (attacker.party && target.party && attacker.party === target.party) {
+			client.write(MessagePackets.showSystem('You cannot attack party members.'));
+			return;
+		}
+		if (attacker.fightData.stats.currentHp <= 0 || target.fightData.stats.currentHp <= 0) {
+			return;
+		}
+
+		const attackers = FightCreator.getParticipants(attacker);
+		const defenders = FightCreator.getParticipants(target);
+		const participantIds = new Set<number>();
+
+		for (const participant of [...attackers, ...defenders]) {
+			if (participantIds.has(participant.id)) {
+				client.write(MessagePackets.showSystem('Invalid fight participants.'));
+				return;
+			}
+			participantIds.add(participant.id);
+			if (participant instanceof Player && participant.fightData.currentFight) {
+				client.write(MessagePackets.showSystem('One of the participants is already in a fight.'));
+				return;
+			}
+		}
+
+		const fight = new Fight(attacker.game, attackers, defenders, FightType.Player);
+		fight.start();
 	}
 }
