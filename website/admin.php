@@ -456,6 +456,7 @@ if (isset($_POST['action']) && ($_POST['action'] === 'save_npc')) {
     $x = intval($_POST['x']);
     $y = intval($_POST['y']);
     $direction = intval($_POST['direction']);
+    $npcType = ($_POST['npc_type'] ?? '') !== '' ? intval($_POST['npc_type']) : null;
     $actionJson = $_POST['action_script'] ?? '';
     
     $npcData = [
@@ -466,6 +467,10 @@ if (isset($_POST['action']) && ($_POST['action'] === 'save_npc')) {
         'point' => ['x' => $x, 'y' => $y],
         'direction' => $direction
     ];
+
+    if ($npcType !== null) {
+        $npcData['type'] = $npcType;
+    }
 
     if (!empty($actionJson)) {
         $decoded = json_decode($actionJson, true);
@@ -1344,6 +1349,16 @@ sort($npcImages);
                                         <label>Direction</label>
                                         <input type="number" name="direction" class="form-control" value="0" max="7">
                                     </div>
+                                </div>
+                                <div class="mb-2">
+                                    <label>Type</label>
+                                    <select name="npc_type" class="form-select">
+                                        <option value="">None</option>
+                                        <option value="1">Forge</option>
+                                        <option value="2">Pet</option>
+                                        <option value="3">Gem</option>
+                                        <option value="4">Gem Converter</option>
+                                    </select>
                                 </div>
                                 <div class="row">
                                     <div class="col-6 mb-2">
@@ -2700,6 +2715,8 @@ sort($npcImages);
             document.querySelector('#npcForm input[name="file"]').value = 0;
             document.querySelector('#npcForm input[name="x"]').value = 0;
             document.querySelector('#npcForm input[name="y"]').value = 0;
+            const npcTypeSelect = document.querySelector('#npcForm select[name="npc_type"]');
+            if (npcTypeSelect) npcTypeSelect.value = '';
             document.querySelector('#npcActionScript').value = '';
             updateNpcPreview();
         }
@@ -3252,6 +3269,8 @@ sort($npcImages);
              document.querySelector('#npcForm input[name="x"]').value = d.point.x;
              document.querySelector('#npcForm input[name="y"]').value = d.point.y;
              document.querySelector('#npcForm input[name="direction"]').value = d.direction || 0;
+             const npcTypeSelect = document.querySelector('#npcForm select[name="npc_type"]');
+             if (npcTypeSelect) npcTypeSelect.value = d.type ?? '';
              document.querySelector('#npcActionScript').value = d.action ? JSON.stringify(d.action, null, 2) : '';
              updateNpcPreview();
         }

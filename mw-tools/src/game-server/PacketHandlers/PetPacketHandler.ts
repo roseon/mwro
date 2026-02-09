@@ -133,6 +133,7 @@ export class PetPacketHandler extends AbstractPacketHandler {
 		if (!pet) return;
 
 		client.write(PetPackets.follow(pet, client.player));
+		client.player.mapData.map.sendPacket(PetPackets.follow(pet, client.player), client.player);
 	}
 
 	/**
@@ -147,6 +148,7 @@ export class PetPacketHandler extends AbstractPacketHandler {
 		if (!pet) return;
 
 		client.write(PetPackets.unfollow(pet));
+		client.player.mapData.map.sendPacket(PetPackets.unfollow(pet), client.player);
 	}
 
 	/**

@@ -78,6 +78,7 @@ export const BlythonNpcsData: NpcJson[] = [
 		map: MapID.Blython,
 		point: { x: 1632, y: 4384 },
 		direction: Direction.SouthWest,
+		type: NpcType.GemConverter,
 	},
 	{
 		id: 0x80000245,
@@ -158,6 +159,7 @@ export const BlythonNpcsData: NpcJson[] = [
 		map: MapID.Blython,
 		point: { x: 2928, y: 5120 },
 		direction: Direction.SouthWest,
+		type: NpcType.Gem,
 	},
 	{
 		id: 0x80000258,
@@ -174,6 +176,7 @@ export const BlythonNpcsData: NpcJson[] = [
 		map: MapID.Blython,
 		point: { x: 3056, y: 5184 },
 		direction: Direction.SouthWest,
+		type: NpcType.Gem,
 	},
 	{
 		id: 0x80000260,

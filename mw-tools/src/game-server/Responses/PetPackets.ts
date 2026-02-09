@@ -81,7 +81,7 @@ export abstract class PetPackets {
 			.uint32(16, pet.id)
 			.uint32(20, owner.id)
 			.uint16(24, pet.file)
-			.uint8(26, pet.level.reborn)
+			.uint8(26, 0)
 			.string(28, pet.name, 14);
 	}
 

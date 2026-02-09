@@ -14,7 +14,7 @@ import { NpcSayExecutable } from '../../GameActions/Actions/NpcSayExecutable';
 import { NpcType } from '../../Database/Collections/Npc/NpcJson';
 import { PlayerPackets } from '../../Responses/PlayerPackets';
 import { EquipmentSlot, EquipmentSlotNames } from '../../Enums/EquipmentSlot';
-import { convertGemItemToDiamondItem } from '../../Utils/GemDiamondMap';
+import { convertGemItemToGemItem } from '../../Utils/GemDiamondMap';
 
 export type PlayerItemsJson = {
 	gold: number;
@@ -740,16 +740,16 @@ export class PlayerItems {
 		let gem = this.inventory.get(index);
 		if (!gem) return;
 
-		let diamond = convertGemItemToDiamondItem(gem, this.player.game.baseItems);
-		if (!diamond) return;
+		let newGem = convertGemItemToGemItem(gem, this.player.game.baseItems);
+		if (!newGem) return;
 
-		this.addItemAndSend(diamond, 1);
+		this.addItemAndSend(newGem, 1);
 
 		this.reduceItem(index);
 
 		// Send success message
 		this.player.client?.write(
-			MessagePackets.showSystem(`Successfully converted ${gem.name} to ${diamond.name}`),
+			MessagePackets.showSystem(`Successfully converted ${gem.name} to ${newGem.name}`),
 		);
 	}
 

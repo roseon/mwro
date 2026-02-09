@@ -77,4 +77,31 @@ export function convertGemItemToDiamondItem(
 	} else {
 		return; // colorKey not recognized
 	}
+
+	return;
+}
+
+/**
+ * Given a gem item and the full item array, return another gem of the same level at random.
+ * Excludes the original gem and non-gem items (e.g., diamonds).
+ */
+export function convertGemItemToGemItem(
+	gem: Item,
+	allItems: Map<number, BaseItem>,
+): BaseItem | undefined {
+	if (!gem.canConvert || !gem.level) return;
+
+	const candidates = Array.from(allItems.values()).filter(item => {
+		if (!item.canConvert) return false;
+		if (item.level !== gem.level) return false;
+		if (item.id === gem.id) return false;
+		if (!item.name?.includes('Gem')) return false;
+		if (item.name.includes('Diamond')) return false;
+		return true;
+	});
+
+	if (candidates.length === 0) return;
+
+	const index = Random.int(0, candidates.length);
+	return candidates[index];
 }
