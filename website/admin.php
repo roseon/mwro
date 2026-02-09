@@ -1568,103 +1568,117 @@ sort($npcImages);
                 <input type="hidden" name="action" value="save_item">
                 <div class="modal-header"><h5 class="modal-title">Item Editor</h5><button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button></div>
                 <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label>ID</label>
-                            <input type="number" name="item_id" id="itemId" class="form-control" required>
-                            <div class="form-text text-warning" id="itemIdWarning" style="display:none;"></div>
-                        </div>
-                        <div class="col-md-6 mb-3"><label>Name</label><input type="text" name="name" id="itemName" class="form-control" required></div>
-                        <div class="col-md-12 mb-3"><label>Description</label><textarea name="description" id="itemDesc" class="form-control"></textarea></div>
-                        <div class="col-md-4 mb-3"><label>File/Icon ID</label><input type="number" name="file" id="itemFile" class="form-control"></div>
-                        <div class="col-md-4 mb-3">
-                            <label>Type</label>
-                            <select name="type" id="itemType" class="form-select">
-                                <option value="0">None</option>
-                                <option value="1">Equipment</option>
-                                <option value="2">Consumable</option>
-                                <option value="3">Usable</option>
-                                <option value="4">Quest</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mb-3"><label>Stack Limit</label><input type="number" name="stack_limit" id="itemStack" class="form-control" value="1"></div>
-                        <div class="col-md-4 mb-3">
-                            <label>Equipment Slot</label>
-                            <select name="equipment_slot" id="itemEquipSlot" class="form-select">
-                                <option value="">None</option>
-                                <option value="0">Head</option>
-                                <option value="1">Armour</option>
-                                <option value="2">Weapon</option>
-                                <option value="3">Shoes</option>
-                                <option value="4">Necklace</option>
-                                <option value="5">Bracelet</option>
-                                <option value="6">Ring</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mb-3"><label>Level Req</label><input type="number" name="level" id="itemLevel" class="form-control"></div>
-                        <div class="col-md-4 mb-3">
-                            <label>Pet ID</label>
-                            <select name="pet_id" id="itemPetId" class="form-select">
-                                <option value="">None</option>
-                                <?php foreach ($pets as $petId => $petName): ?>
-                                    <option value="<?php echo $petId; ?>"><?php echo $petId . ' - ' . htmlspecialchars($petName); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Race</label>
-                            <select name="race" id="itemRace" class="form-select">
-                                <option value="">Any</option>
-                                <option value="0">Human</option>
-                                <option value="1">Centaur</option>
-                                <option value="2">Mage</option>
-                                <option value="3">Borg</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Gender</label>
-                            <select name="gender" id="itemGender" class="form-select">
-                                <option value="">Any</option>
-                                <option value="0">Male</option>
-                                <option value="1">Female</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label>Supported Slots</label>
-                            <select name="supported_slots[]" id="itemSupportedSlots" class="form-select" multiple>
-                                <option value="">None</option>
-                                <option value="0">Head</option>
-                                <option value="1">Armour</option>
-                                <option value="2">Weapon</option>
-                                <option value="3">Shoes</option>
-                                <option value="4">Necklace</option>
-                                <option value="5">Bracelet</option>
-                                <option value="6">Ring</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4 mb-3 form-check">
-                            <input type="checkbox" name="quest_item" id="itemQuest" class="form-check-input">
-                            <label class="form-check-label" for="itemQuest">Quest Item</label>
-                        </div>
-                        <div class="col-md-4 mb-3 form-check">
-                            <input type="checkbox" name="can_convert" id="itemCanConvert" class="form-check-input">
-                            <label class="form-check-label" for="itemCanConvert">Can Convert</label>
-                        </div>
-                        <div class="col-md-12"><h6>Stats</h6></div>
-                        <div class="col-md-4 mb-2"><label>HP</label><input type="number" name="stats_hp" id="itemHp" class="form-control"></div>
-                        <div class="col-md-4 mb-2"><label>MP</label><input type="number" name="stats_mp" id="itemMp" class="form-control"></div>
-                        <div class="col-md-4 mb-2"><label>STR</label><input type="number" name="stats_str" id="itemStr" class="form-control"></div>
-                        <div class="col-md-12">
-                            <h6 class="mt-2">Stat Builder</h6>
-                            <div class="table-responsive">
-                                <table class="table table-dark table-sm align-middle mb-2" id="itemStatsTable">
-                                    <thead><tr><th style="width:40%">Key</th><th style="width:35%">Value</th><th style="width:15%">Type</th><th style="width:10%"></th></tr></thead>
-                                    <tbody></tbody>
-                                </table>
+                    <ul class="nav nav-tabs mb-3" id="itemTabs" role="tablist">
+                        <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab" data-bs-target="#itemTabGeneral" type="button">General</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#itemTabStats" type="button">Stats</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#itemTabAction" type="button">Action</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#itemTabProps" type="button">Properties</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#itemTabAdvanced" type="button">Advanced</button></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="itemTabGeneral">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label>ID</label>
+                                    <input type="number" name="item_id" id="itemId" class="form-control" required>
+                                    <div class="form-text text-warning" id="itemIdWarning" style="display:none;"></div>
+                                </div>
+                                <div class="col-md-6 mb-3"><label>Name</label><input type="text" name="name" id="itemName" class="form-control" required></div>
+                                <div class="col-md-12 mb-3"><label>Description</label><textarea name="description" id="itemDesc" class="form-control"></textarea></div>
+                                <div class="col-md-4 mb-3"><label>File/Icon ID</label><input type="number" name="file" id="itemFile" class="form-control"></div>
+                                <div class="col-md-4 mb-3">
+                                    <label>Type</label>
+                                    <select name="type" id="itemType" class="form-select">
+                                        <option value="0">None</option>
+                                        <option value="1">Equipment</option>
+                                        <option value="2">Consumable</option>
+                                        <option value="3">Usable</option>
+                                        <option value="4">Quest</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3"><label>Stack Limit</label><input type="number" name="stack_limit" id="itemStack" class="form-control" value="1"></div>
+                                <div class="col-md-4 mb-3">
+                                    <label>Equipment Slot</label>
+                                    <select name="equipment_slot" id="itemEquipSlot" class="form-select">
+                                        <option value="">None</option>
+                                        <option value="0">Head</option>
+                                        <option value="1">Armour</option>
+                                        <option value="2">Weapon</option>
+                                        <option value="3">Shoes</option>
+                                        <option value="4">Necklace</option>
+                                        <option value="5">Bracelet</option>
+                                        <option value="6">Ring</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3"><label>Level Req</label><input type="number" name="level" id="itemLevel" class="form-control"></div>
+                                <div class="col-md-4 mb-3">
+                                    <label>Pet ID</label>
+                                    <select name="pet_id" id="itemPetId" class="form-select">
+                                        <option value="">None</option>
+                                        <?php foreach ($pets as $petId => $petName): ?>
+                                            <option value="<?php echo $petId; ?>"><?php echo $petId . ' - ' . htmlspecialchars($petName); ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>Race</label>
+                                    <select name="race" id="itemRace" class="form-select">
+                                        <option value="">Any</option>
+                                        <option value="0">Human</option>
+                                        <option value="1">Centaur</option>
+                                        <option value="2">Mage</option>
+                                        <option value="3">Borg</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>Gender</label>
+                                    <select name="gender" id="itemGender" class="form-select">
+                                        <option value="">Any</option>
+                                        <option value="0">Male</option>
+                                        <option value="1">Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label>Supported Slots</label>
+                                    <select name="supported_slots[]" id="itemSupportedSlots" class="form-select" multiple>
+                                        <option value="">None</option>
+                                        <option value="0">Head</option>
+                                        <option value="1">Armour</option>
+                                        <option value="2">Weapon</option>
+                                        <option value="3">Shoes</option>
+                                        <option value="4">Necklace</option>
+                                        <option value="5">Bracelet</option>
+                                        <option value="6">Ring</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4 mb-3 form-check">
+                                    <input type="checkbox" name="quest_item" id="itemQuest" class="form-check-input">
+                                    <label class="form-check-label" for="itemQuest">Quest Item</label>
+                                </div>
+                                <div class="col-md-4 mb-3 form-check">
+                                    <input type="checkbox" name="can_convert" id="itemCanConvert" class="form-check-input">
+                                    <label class="form-check-label" for="itemCanConvert">Can Convert</label>
+                                </div>
                             </div>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addItemStatRow()">Add Stat Field</button>
                         </div>
-                        <div class="col-md-12">
+                        <div class="tab-pane fade" id="itemTabStats">
+                            <div class="row">
+                                <div class="col-md-4 mb-2"><label>HP</label><input type="number" name="stats_hp" id="itemHp" class="form-control"></div>
+                                <div class="col-md-4 mb-2"><label>MP</label><input type="number" name="stats_mp" id="itemMp" class="form-control"></div>
+                                <div class="col-md-4 mb-2"><label>STR</label><input type="number" name="stats_str" id="itemStr" class="form-control"></div>
+                                <div class="col-md-12">
+                                    <h6 class="mt-2">Stat Builder</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-dark table-sm align-middle mb-2" id="itemStatsTable">
+                                            <thead><tr><th style="width:40%">Key</th><th style="width:35%">Value</th><th style="width:15%">Type</th><th style="width:10%"></th></tr></thead>
+                                            <tbody></tbody>
+                                        </table>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addItemStatRow()">Add Stat Field</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="itemTabAction">
                             <h6 class="mt-2">Action Builder</h6>
                             <div class="d-flex flex-wrap gap-2 align-items-end mb-2">
                                 <div>
@@ -1683,6 +1697,7 @@ sort($npcImages);
                                         <option value="pet-add-growth">Add Pet Growth</option>
                                         <option value="pet-add-resist">Add Pet Resist</option>
                                         <option value="pet-reset-resist">Reset Pet Resist</option>
+                                        <option value="shapeshift-potion">Shapeshift Potion</option>
                                     </select>
                                 </div>
                                 <div>
@@ -1715,6 +1730,33 @@ sort($npcImages);
                                     <label class="form-label">Resist JSON</label>
                                     <input type="text" id="itemActionPresetResist" class="form-control form-control-sm" placeholder='{"hitRate":5}'>
                                 </div>
+                                <div class="w-100"></div>
+                                <div class="text-muted small">Shapeshift preset fields</div>
+                                <div class="w-100"></div>
+                                <div class="flex-grow-1">
+                                    <label class="form-label">Shapeshift Message</label>
+                                    <input type="text" id="itemActionPresetShiftMessage" class="form-control form-control-sm" placeholder="Would you like to shapeshift?">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label class="form-label">Shapeshift Name</label>
+                                    <input type="text" id="itemActionPresetShiftName" class="form-control form-control-sm" placeholder="Ghost Warrior">
+                                </div>
+                                <div>
+                                    <label class="form-label">Shapeshift File</label>
+                                    <input type="number" id="itemActionPresetShiftFile" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div class="flex-grow-1">
+                                    <label class="form-label">Shapeshift Stats JSON</label>
+                                    <input type="text" id="itemActionPresetShiftStats" class="form-control form-control-sm" placeholder='{"attack":14,"berserkRate":10,"berserkDamage":10}'>
+                                </div>
+                                <div>
+                                    <label class="form-label">Yes Text</label>
+                                    <input type="text" id="itemActionPresetShiftYes" class="form-control form-control-sm" placeholder="#GYes#E">
+                                </div>
+                                <div>
+                                    <label class="form-label">No Text</label>
+                                    <input type="text" id="itemActionPresetShiftNo" class="form-control form-control-sm" placeholder="#RNo#E">
+                                </div>
                                 <button type="button" class="btn btn-sm btn-outline-info" onclick="applyItemActionPreset()">Apply</button>
                             </div>
                             <div class="table-responsive">
@@ -1725,7 +1767,7 @@ sort($npcImages);
                             </div>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addItemActionRow()">Add Action Field</button>
                         </div>
-                        <div class="col-md-12">
+                        <div class="tab-pane fade" id="itemTabProps">
                             <h6 class="mt-3">Item Properties Builder</h6>
                             <div class="table-responsive">
                                 <table class="table table-dark table-sm align-middle mb-2" id="itemPropsTable">
@@ -1735,24 +1777,18 @@ sort($npcImages);
                             </div>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addItemPropRow()">Add Property Field</button>
                         </div>
-                        <div class="col-md-12 mt-3">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <label class="mb-0">Advanced JSON</label>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#itemJsonAdvanced">Toggle</button>
+                        <div class="tab-pane fade" id="itemTabAdvanced">
+                            <div class="mb-2">
+                                <label>Stats JSON (optional)</label>
+                                <textarea name="stats_json" id="itemStatsJson" class="form-control" rows="2" placeholder='{"attack":5,"speed":1}'></textarea>
                             </div>
-                            <div class="collapse mt-2" id="itemJsonAdvanced">
-                                <div class="mb-2">
-                                    <label>Stats JSON (optional)</label>
-                                    <textarea name="stats_json" id="itemStatsJson" class="form-control" rows="2" placeholder='{"attack":5,"speed":1}'></textarea>
-                                </div>
-                                <div class="mb-2">
-                                    <label>Action JSON (optional)</label>
-                                    <textarea name="action_json" id="itemActionJson" class="form-control" rows="2" placeholder='{"type":"heal","hp":100}'></textarea>
-                                </div>
-                                <div class="mb-2">
-                                    <label>Item Properties JSON (optional)</label>
-                                    <textarea name="item_properties_json" id="itemPropsJson" class="form-control" rows="2" placeholder='{"bindLocation":{"map":1,"x":10,"y":10}}'></textarea>
-                                </div>
+                            <div class="mb-2">
+                                <label>Action JSON (optional)</label>
+                                <textarea name="action_json" id="itemActionJson" class="form-control" rows="2" placeholder='{"type":"heal","hp":100}'></textarea>
+                            </div>
+                            <div class="mb-2">
+                                <label>Item Properties JSON (optional)</label>
+                                <textarea name="item_properties_json" id="itemPropsJson" class="form-control" rows="2" placeholder='{"bindLocation":{"map":1,"x":10,"y":10}}'></textarea>
                             </div>
                         </div>
                     </div>
@@ -1792,6 +1828,7 @@ sort($npcImages);
                         <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabQuest" type="button">Quest</button></li>
                         <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabTele" type="button">Teleport</button></li>
                         <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabShop" type="button">Shop</button></li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabBank" type="button">Bank</button></li>
                         <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabItem" type="button">Item</button></li>
                         <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#tabFight" type="button">Fight</button></li>
                     </ul>
@@ -1889,19 +1926,48 @@ sort($npcImages);
                             <button onclick="insertQuestLogic()" class="btn btn-info w-100">Insert Quest Conversation</button>
                         </div>
                         <div class="tab-pane fade" id="tabTele">
-                            <div class="row">
-                                <div class="col-4">
-                                    <input type="number" id="sbMap" class="form-control" placeholder="Map ID">
-                                    <div class="form-text text-muted small">Dest Map</div>
-                                </div>
-                                <div class="col-4">
-                                    <input type="number" id="sbX" class="form-control" placeholder="X">
-                                    <div class="form-text text-muted small">Dest X</div>
-                                </div>
-                                <div class="col-4">
-                                    <input type="number" id="sbY" class="form-control" placeholder="Y">
-                                    <div class="form-text text-muted small">Dest Y</div>
-                                </div>
+                            <label>Teleport Message</label>
+                            <textarea id="sbTeleMsg" class="form-control mb-2" rows="2" placeholder="Where would you like to go?"></textarea>
+                            <label>Options JSON (optional)</label>
+                            <textarea id="sbTeleOptions" class="form-control mb-2" rows="4" placeholder='[{"text":"#GWoodlingor (0 gold)#E","action":{"type":"teleport","targetNpcId":2147483649}}]'></textarea>
+                            <div class="form-text text-muted small mb-2">Leave empty to build a single teleport option below.</div>
+                            <div class="form-text text-muted small mb-2">Teleport options (up to 10). Leave map/X/Y empty to add a text-only option.</div>
+                            <div class="table-responsive mb-2">
+                                <table class="table table-dark table-sm align-middle mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:40%">Option Text</th>
+                                            <th style="width:25%">Map</th>
+                                            <th style="width:15%">X</th>
+                                            <th style="width:15%">Y</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php for ($i = 0; $i < 10; $i++): ?>
+                                            <tr>
+                                                <td>
+                                                    <input type="text" id="sbTeleOptionText<?php echo $i; ?>" class="form-control form-control-sm" placeholder="#gTake me...#e">
+                                                </td>
+                                                <td>
+                                                    <select id="sbTeleMap<?php echo $i; ?>" class="form-select form-select-sm">
+                                                        <option value="">Dest Map</option>
+                                                        <?php foreach ($maps as $m): ?>
+                                                            <option value="<?php echo $m['map']; ?>">
+                                                                <?php echo isset($m['name']) ? htmlspecialchars($m['name']) . " ({$m['map']})" : "Map {$m['map']}"; ?>
+                                                            </option>
+                                                        <?php endforeach; ?>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="number" id="sbTeleX<?php echo $i; ?>" class="form-control form-control-sm" placeholder="X">
+                                                </td>
+                                                <td>
+                                                    <input type="number" id="sbTeleY<?php echo $i; ?>" class="form-control form-control-sm" placeholder="Y">
+                                                </td>
+                                            </tr>
+                                        <?php endfor; ?>
+                                    </tbody>
+                                </table>
                             </div>
                             <button onclick="insertTele()" class="btn btn-warning w-100 mt-2">Insert Teleport</button>
                         </div>
@@ -1924,6 +1990,12 @@ sort($npcImages);
                             </div>
                             <div class="form-text text-muted small mb-2">Enter up to 24 items with their prices.</div>
                             <button onclick="insertShop()" class="btn btn-success w-100">Insert Shop Block</button>
+                        </div>
+                        <div class="tab-pane fade" id="tabBank">
+                            <label>Bank Message</label>
+                            <textarea id="sbBankMsg" class="form-control mb-2" rows="2" placeholder="How can I help you with the bank?"></textarea>
+                            <div class="form-text text-muted small mb-2">Creates a bank dialog with all four options.</div>
+                            <button onclick="insertBankOperation()" class="btn btn-secondary w-100">Insert Bank Block</button>
                         </div>
                         <div class="tab-pane fade" id="tabItem">
                             <label>Operation</label>
@@ -2346,6 +2418,12 @@ sort($npcImages);
             const intRaw = document.getElementById('itemActionPresetInt')?.value ?? '0';
             const strRaw = document.getElementById('itemActionPresetStr')?.value ?? '0';
             const agiRaw = document.getElementById('itemActionPresetAgi')?.value ?? '0';
+            const shiftMessage = document.getElementById('itemActionPresetShiftMessage')?.value?.trim() || '';
+            const shiftName = document.getElementById('itemActionPresetShiftName')?.value?.trim() || '';
+            const shiftFileRaw = document.getElementById('itemActionPresetShiftFile')?.value ?? '0';
+            const shiftStatsRaw = document.getElementById('itemActionPresetShiftStats')?.value?.trim() || '';
+            const shiftYesText = document.getElementById('itemActionPresetShiftYes')?.value?.trim() || '';
+            const shiftNoText = document.getElementById('itemActionPresetShiftNo')?.value?.trim() || '';
             let action = null;
 
             switch (preset) {
@@ -2404,6 +2482,44 @@ sort($npcImages);
                     break;
                 case 'pet-reset-resist':
                     action = { type: 'petResetResist' };
+                    break;
+                case 'shapeshift-potion':
+                    if (!shiftName) {
+                        alert('Shapeshift Name is required.');
+                        return;
+                    }
+                    if (!shiftMessage) {
+                        alert('Shapeshift Message is required.');
+                        return;
+                    }
+                    try {
+                        const shiftStats = shiftStatsRaw ? JSON.parse(shiftStatsRaw) : {};
+                        action = {
+                            type: 'npcSay',
+                            message: shiftMessage,
+                            options: [
+                                {
+                                    text: shiftYesText || '#GYes#E',
+                                    action: {
+                                        type: 'array',
+                                        actions: [
+                                            {
+                                                type: 'shapeShift',
+                                                name: shiftName,
+                                                file: Number(shiftFileRaw) || 0,
+                                                stats: shiftStats
+                                            },
+                                            { type: 'removeLastItemUsed' }
+                                        ]
+                                    }
+                                },
+                                { text: shiftNoText || '#RNo#E' }
+                            ]
+                        };
+                    } catch (e) {
+                        alert('Invalid Shapeshift Stats JSON.');
+                        return;
+                    }
                     break;
                 default:
                     return;
@@ -3475,6 +3591,23 @@ sort($npcImages);
             bootstrap.Modal.getInstance(document.getElementById('scriptBuilderModal')).hide();
         }
 
+        function insertBankOperation() {
+            const msg = document.getElementById('sbBankMsg').value || 'How can I help you with the bank?';
+            const json = `
+{
+  "type": "npcSay",
+  "message": ${JSON.stringify(msg)},
+  "options": [
+    { "text": "Withdraw Items", "action": { "type": "bank", "operation": "withdraw" } },
+    { "text": "Deposit Items", "action": { "type": "bank", "operation": "deposit" } },
+    { "text": "Withdraw Gold", "action": { "type": "bank", "operation": "withdrawGold" } },
+    { "text": "Deposit Gold", "action": { "type": "bank", "operation": "depositGold" } }
+  ]
+}`;
+            appendToScript(json);
+            bootstrap.Modal.getInstance(document.getElementById('scriptBuilderModal')).hide();
+        }
+
         function toggleQuestBuilderFields() {
             const type = document.getElementById('sbQuestType').value;
             document.getElementById('sbQuestStartFields').style.display = type === 'start' ? 'block' : 'none';
@@ -3647,15 +3780,69 @@ sort($npcImages);
         }
 
         function insertTele() {
-            const m = document.getElementById('sbMap').value;
-            const x = document.getElementById('sbX').value;
-            const y = document.getElementById('sbY').value;
+            const msg = document.getElementById('sbTeleMsg').value || 'Where would you like to go?';
+            const optionsRaw = document.getElementById('sbTeleOptions').value.trim();
+            let optionsJson = '';
+
+            if (optionsRaw) {
+                try {
+                    JSON.parse(optionsRaw);
+                } catch (e) {
+                    alert('Invalid JSON in Teleport Options.');
+                    return;
+                }
+                optionsJson = optionsRaw;
+            } else {
+                const options = [];
+                for (let i = 0; i < 10; i++) {
+                    const text = document.getElementById(`sbTeleOptionText${i}`)?.value?.trim();
+                    const map = document.getElementById(`sbTeleMap${i}`)?.value?.trim();
+                    const x = document.getElementById(`sbTeleX${i}`)?.value?.trim();
+                    const y = document.getElementById(`sbTeleY${i}`)?.value?.trim();
+
+                    if (!text) {
+                        if (map || x || y) {
+                            alert('Teleport option text is required when map coordinates are provided.');
+                            return;
+                        }
+                        continue;
+                    }
+
+                    if (!map && !x && !y) {
+                        options.push({ text });
+                        continue;
+                    }
+
+                    if (!map || x === '' || y === '') {
+                        alert('Teleport map, X, and Y are required for each teleport option.');
+                        return;
+                    }
+
+                    options.push({
+                        text,
+                        action: {
+                            type: 'teleport',
+                            coordinates: {
+                                map: parseInt(map, 10),
+                                x: parseInt(x, 10),
+                                y: parseInt(y, 10)
+                            }
+                        }
+                    });
+                }
+
+                if (options.length === 0) {
+                    alert('Add at least one teleport option or provide Options JSON.');
+                    return;
+                }
+
+                optionsJson = JSON.stringify(options, null, 2);
+            }
             const json = `
 {
-  "type": "teleport",
-  "mapId": ${m},
-  "x": ${x},
-  "y": ${y}
+  "type": "npcSay",
+  "message": ${JSON.stringify(msg)},
+  "options": ${optionsJson}
 }`;
              appendToScript(json);
              bootstrap.Modal.getInstance(document.getElementById('scriptBuilderModal')).hide();
