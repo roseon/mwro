@@ -1358,6 +1358,7 @@ sort($npcImages);
                                         <option value="2">Pet</option>
                                         <option value="3">Gem</option>
                                         <option value="4">Gem Converter</option>
+                                        <option value="5">Buyer</option>
                                     </select>
                                 </div>
                                 <div class="row">
@@ -1906,8 +1907,22 @@ sort($npcImages);
                         </div>
                         <div class="tab-pane fade" id="tabShop">
                             <label>Items List</label>
-                            <textarea id="sbShopItems" class="form-control mb-1" rows="3" placeholder="1001:50, 1002:100"></textarea>
-                            <div class="form-text text-muted small mb-2">Format: <code>ItemID:Price, ItemID2:Price2</code> (comma separated).</div>
+                            <div class="row g-2 mb-2" id="sbShopRows">
+                                <?php for ($i = 0; $i < 24; $i++): ?>
+                                    <div class="col-6">
+                                        <select class="form-select" id="sbShopItemId<?php echo $i; ?>">
+                                            <option value="">Item ID</option>
+                                            <?php foreach ($items as $item): $d = $item['data']; ?>
+                                                <option value="<?php echo $d['id']; ?>"><?php echo $d['id'] . ' - ' . htmlspecialchars($d['name'] ?? ''); ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="number" class="form-control" id="sbShopItemPrice<?php echo $i; ?>" placeholder="Price">
+                                    </div>
+                                <?php endfor; ?>
+                            </div>
+                            <div class="form-text text-muted small mb-2">Enter up to 24 items with their prices.</div>
                             <button onclick="insertShop()" class="btn btn-success w-100">Insert Shop Block</button>
                         </div>
                         <div class="tab-pane fade" id="tabItem">
@@ -3647,11 +3662,17 @@ sort($npcImages);
         }
 
         function insertShop() {
-            const raw = document.getElementById('sbShopItems').value;
-            const items = raw.split(',').map(s => {
-                const parts = s.split(':');
-                return { itemId: parseInt(parts[0].trim()), price: parseInt(parts[1].trim()) };
-            }).filter(i => !isNaN(i.itemId) && !isNaN(i.price));
+            const items = [];
+            for (let i = 0; i < 24; i++) {
+                const idEl = document.getElementById(`sbShopItemId${i}`);
+                const priceEl = document.getElementById(`sbShopItemPrice${i}`);
+                if (!idEl || !priceEl) continue;
+                const itemId = parseInt(idEl.value, 10);
+                const price = parseInt(priceEl.value, 10);
+                if (!isNaN(itemId) && !isNaN(price)) {
+                    items.push({ itemId, price });
+                }
+            }
 
             const json = `
 {

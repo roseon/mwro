@@ -1,4 +1,4 @@
-import type { NpcJson } from '../../Database/Collections/Npc/NpcJson';
+import { NpcType, type NpcJson } from '../../Database/Collections/Npc/NpcJson';
 import type { ClientActionContext } from '../../GameActions/GameActionContext';
 import { createClientContext } from '../../GameActions/GameActionContext';
 import type { GameActionExecutable } from '../../GameActions/GameActionExecutable';
@@ -7,6 +7,7 @@ import type { GameConnection, PlayerConnection } from '../../Server/Game/GameCon
 import { Individual } from '../Individual/Individual';
 import type { GameMap } from '../Map/GameMap';
 import { NpcMapData } from './NpcMapData';
+import { ShopPackets } from '../../Responses/ShopPackets';
 
 // NPC IDs must be in the 0x80000000 range.
 export class Npc extends Individual {
@@ -44,6 +45,10 @@ export class Npc extends Individual {
 		if (!client.hasPlayer()) return;
 
 		client.player.memory.activeNpc = this;
+		if (this.type === NpcType.Buyer || this.name.toLowerCase() === 'buyer') {
+			client.write(ShopPackets.npcBuyer());
+			return;
+		}
 		this.action?.execute(createClientContext(client));
 	}
 

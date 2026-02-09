@@ -1819,6 +1819,18 @@ export const gemItemData: BaseItemJson[] = [
 		supportedEquipmentSlots: [EquipmentSlot.Armour, EquipmentSlot.Necklace, EquipmentSlot.Head],
 	},
 	{
+		id: 31016,
+		file: 234,
+		stackLimit: 1,
+		name: 'Purple Gem +15',
+		description: 'Gem to improve #e#rSpeed Increase',
+		type: ItemType.None,
+		stats: { speed: 15 },
+		canConvert: true,
+		level: 15,
+		supportedEquipmentSlots: [EquipmentSlot.Armour, EquipmentSlot.Necklace, EquipmentSlot.Head],
+	},
+	{
 		id: 31101,
 		file: 233,
 		stackLimit: 20,

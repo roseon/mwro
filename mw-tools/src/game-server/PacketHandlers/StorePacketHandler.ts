@@ -5,6 +5,8 @@ import type { PacketConnection } from '../Server/Packet/PacketConnection';
 import { AbstractPacketHandler } from './AbstractPacketHandler';
 import { MessagePackets } from '../Responses/MessagePackets';
 import { PlayerPackets } from '../Responses/PlayerPackets';
+import { ItemPackets } from '../Responses/ItemPackets';
+import { NpcType } from '../Database/Collections/Npc/NpcJson';
 
 /**
  * Handles packets regarding stores and banks.
@@ -15,7 +17,7 @@ export class StorePacketHandler extends AbstractPacketHandler {
 	 * @param type
 	 */
 	public handlesType(type: PacketType): boolean {
-		return type === PacketType.StoreBuy;
+		return type === PacketType.StoreBuy || type === PacketType.StoreSell;
 	}
 
 	/**
@@ -32,9 +34,45 @@ export class StorePacketHandler extends AbstractPacketHandler {
 			case PacketType.StoreBuy:
 				this.onStoreBuy(packet, client);
 				break;
+			case PacketType.StoreSell:
+				this.onStoreSell(packet, client);
+				break;
 			default:
 				this.notImplemented(packet);
 		}
+	}
+
+	/**
+	 * Called when the player sells items to an NPC buyer.
+	 * @param packet
+	 * @param client
+	 */
+	private onStoreSell(packet: Buffer, client: PlayerConnection): void {
+		const activeNpc = client.player.memory.activeNpc;
+		if (!activeNpc || activeNpc.type !== NpcType.Buyer) return;
+
+		const count = packet.readUInt16LE(12);
+		const index = packet.readUInt16LE(14);
+		if (!count) return;
+
+		const item = client.player.items.inventory.get(index);
+		if (!item || item.locked || item.questItem) return;
+		if (item.count < count) return;
+
+		const basePrice = item.price > 0 ? item.price : Math.max(1, item.level || 1);
+		const sellPrice = Math.max(1, Math.floor(basePrice * 0.5));
+		const totalPrice = sellPrice * count;
+
+		item.count -= count;
+		if (item.count <= 0) {
+			client.player.items.inventory.delete(index);
+			client.write(ItemPackets.remove(index));
+		} else {
+			client.write(ItemPackets.change([[index, item]]));
+		}
+
+		client.player.items.addGoldAndSend(totalPrice);
+		client.write(MessagePackets.showSystem(`Sold ${count}x ${item.base.name} for ${totalPrice} gold.`));
 	}
 
 	/**

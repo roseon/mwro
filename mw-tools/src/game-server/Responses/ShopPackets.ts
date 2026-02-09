@@ -29,4 +29,11 @@ export abstract class ShopPackets {
 
 		return [packet1, packet2];
 	}
+
+	/**
+	 * Opens the sell-items window for an NPC buyer.
+	 */
+	public static npcBuyer(): Packet {
+		return new Packet(16, PacketType.SendMacro).uint8(12, Macro.SellItems);
+	}
 }

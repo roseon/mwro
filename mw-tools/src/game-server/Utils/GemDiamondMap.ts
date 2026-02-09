@@ -91,6 +91,11 @@ export function convertGemItemToGemItem(
 ): BaseItem | undefined {
 	if (!gem.canConvert || !gem.level) return;
 
+	if (gem.id === 31015) {
+		const target = allItems.get(31016);
+		if (target) return target;
+	}
+
 	const candidates = Array.from(allItems.values()).filter(item => {
 		if (!item.canConvert) return false;
 		if (item.level !== gem.level) return false;

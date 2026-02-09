@@ -8,6 +8,7 @@ export enum NpcType {
 	Pet = 2,
 	Gem = 3,
 	GemConverter = 4,
+	Buyer = 5,
 }
 
 export type NpcJson = {
