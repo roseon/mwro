@@ -291,6 +291,9 @@ if (isset($_POST['action']) && $_POST['action'] === 'save_pet') {
     $statStrMaxRaw = $_POST['stat_str_max'] ?? '';
     $statAgiMinRaw = $_POST['stat_agi_min'] ?? '';
     $statAgiMaxRaw = $_POST['stat_agi_max'] ?? '';
+    $physicalResistRaw = $_POST['physical_resist'] ?? '';
+    $magicalResistRaw = $_POST['magical_resist'] ?? '';
+    $elementalResistRaw = $_POST['elemental_resist'] ?? '';
     $resistKeys = $_POST['resist_key'] ?? [];
     $resistValues = $_POST['resist_value'] ?? [];
     $skillIds = $_POST['skill_id'] ?? [];
@@ -300,25 +303,25 @@ if (isset($_POST['action']) && $_POST['action'] === 'save_pet') {
         $petKey = (string)$petId;
     }
 
-    if ($buildJson === '' && ($buildStaRaw !== '' || $buildIntRaw !== '' || $buildStrRaw !== '' || $buildAgiRaw !== '')) {
+    if ($buildJson === '') {
         $buildJson = json_encode([
-            'sta' => floatval($buildStaRaw),
-            'int' => floatval($buildIntRaw),
-            'str' => floatval($buildStrRaw),
-            'agi' => floatval($buildAgiRaw)
+            'sta' => floatval($buildStaRaw !== '' ? $buildStaRaw : 0),
+            'int' => floatval($buildIntRaw !== '' ? $buildIntRaw : 0),
+            'str' => floatval($buildStrRaw !== '' ? $buildStrRaw : 0),
+            'agi' => floatval($buildAgiRaw !== '' ? $buildAgiRaw : 0)
         ]);
     }
 
-    if ($statRatesJson === '' && ($statGrowthMinRaw !== '' || $statGrowthMaxRaw !== '' || $statStaMinRaw !== '' || $statStaMaxRaw !== '' || $statIntMinRaw !== '' || $statIntMaxRaw !== '' || $statStrMinRaw !== '' || $statStrMaxRaw !== '' || $statAgiMinRaw !== '' || $statAgiMaxRaw !== '')) {
+    if ($statRatesJson === '') {
         $statRatesJson = json_encode([
             'growthRate' => [
-                'min' => floatval($statGrowthMinRaw),
-                'max' => floatval($statGrowthMaxRaw)
+                'min' => floatval($statGrowthMinRaw !== '' ? $statGrowthMinRaw : 0),
+                'max' => floatval($statGrowthMaxRaw !== '' ? $statGrowthMaxRaw : 0)
             ],
-            'sta' => ['min' => floatval($statStaMinRaw), 'max' => floatval($statStaMaxRaw)],
-            'int' => ['min' => floatval($statIntMinRaw), 'max' => floatval($statIntMaxRaw)],
-            'str' => ['min' => floatval($statStrMinRaw), 'max' => floatval($statStrMaxRaw)],
-            'agi' => ['min' => floatval($statAgiMinRaw), 'max' => floatval($statAgiMaxRaw)]
+            'sta' => ['min' => floatval($statStaMinRaw !== '' ? $statStaMinRaw : 0), 'max' => floatval($statStaMaxRaw !== '' ? $statStaMaxRaw : 0)],
+            'int' => ['min' => floatval($statIntMinRaw !== '' ? $statIntMinRaw : 0), 'max' => floatval($statIntMaxRaw !== '' ? $statIntMaxRaw : 0)],
+            'str' => ['min' => floatval($statStrMinRaw !== '' ? $statStrMinRaw : 0), 'max' => floatval($statStrMaxRaw !== '' ? $statStrMaxRaw : 0)],
+            'agi' => ['min' => floatval($statAgiMinRaw !== '' ? $statAgiMinRaw : 0), 'max' => floatval($statAgiMaxRaw !== '' ? $statAgiMaxRaw : 0)]
         ]);
     }
 
@@ -349,28 +352,20 @@ if (isset($_POST['action']) && $_POST['action'] === 'save_pet') {
     }
 
     $build = null;
-    if ($buildJson === '') {
-        $error = 'Build JSON is required.';
+    $decodedBuild = json_decode($buildJson, true);
+    if ($decodedBuild === null && json_last_error() !== JSON_ERROR_NONE) {
+        $error = 'Invalid Build JSON.';
     } else {
-        $decodedBuild = json_decode($buildJson, true);
-        if ($decodedBuild === null && json_last_error() !== JSON_ERROR_NONE) {
-            $error = 'Invalid Build JSON.';
-        } else {
-            $build = $decodedBuild;
-        }
+        $build = $decodedBuild;
     }
 
     $statRates = null;
     if (!$error) {
-        if ($statRatesJson === '') {
-            $error = 'Stat Rates JSON is required.';
+        $decodedStatRates = json_decode($statRatesJson, true);
+        if ($decodedStatRates === null && json_last_error() !== JSON_ERROR_NONE) {
+            $error = 'Invalid Stat Rates JSON.';
         } else {
-            $decodedStatRates = json_decode($statRatesJson, true);
-            if ($decodedStatRates === null && json_last_error() !== JSON_ERROR_NONE) {
-                $error = 'Invalid Stat Rates JSON.';
-            } else {
-                $statRates = $decodedStatRates;
-            }
+            $statRates = $decodedStatRates;
         }
     }
 
@@ -411,6 +406,9 @@ if (isset($_POST['action']) && $_POST['action'] === 'save_pet') {
             'level' => $level,
             'build' => $build,
             'statRates' => $statRates,
+            'physicalResist' => $physicalResistRaw !== '' ? floatval($physicalResistRaw) : 0,
+            'magicalResist' => $magicalResistRaw !== '' ? floatval($magicalResistRaw) : 0,
+            'elementalResist' => $elementalResistRaw !== '' ? floatval($elementalResistRaw) : 0,
             'resist' => $resist,
             'skills' => $skills
         ];
@@ -1168,6 +1166,7 @@ sort($npcImages);
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-primary edit-item-btn" onclick='editItem(<?php echo json_encode($d); ?>)'>Edit</button>
+                                    <button class="btn btn-sm btn-outline-info" onclick='copyItem(<?php echo json_encode($d); ?>)'>Copy</button>
                                     <form method="POST" style="display:inline;" onsubmit="return confirm('Delete item?');">
                                         <input type="hidden" name="action" value="delete_item">
                                         <input type="hidden" name="item_id" value="<?php echo $d['id']; ?>">
@@ -1196,11 +1195,16 @@ sort($npcImages);
                         <input type="text" id="petSearch" class="form-control form-control-sm" style="max-width: 260px;" placeholder="Search pets..." onkeyup="filterPets()">
                     </div>
                     <table class="table table-dark table-striped align-middle">
-                        <thead><tr><th>Key</th><th>Name</th><th>Pet ID</th><th>File</th><th>Species</th><th>Level</th><th>Actions</th></tr></thead>
+                        <thead><tr><th>Key</th><th>Image</th><th>Name</th><th>Pet ID</th><th>File</th><th>Species</th><th>Level</th><th>Actions</th></tr></thead>
                         <tbody id="petsTableBody">
                             <?php foreach ($petEntries as $pet): $d=$pet['data']; ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($pet['id']); ?></td>
+                                <td>
+                                    <div class="list-img-preview">
+                                        <img class="pet-anim" data-file="<?php echo htmlspecialchars($d['file'] ?? 0); ?>" src="npc_image.php?file=<?php echo htmlspecialchars($d['file'] ?? 0); ?>" alt="<?php echo htmlspecialchars($d['file'] ?? 0); ?>" style="max-width:100%; max-height:100%;">
+                                    </div>
+                                </td>
                                 <td><?php echo htmlspecialchars($d['name'] ?? ''); ?></td>
                                 <td><?php echo htmlspecialchars($d['petId'] ?? ''); ?></td>
                                 <td><?php echo htmlspecialchars($d['file'] ?? ''); ?></td>
@@ -1208,6 +1212,7 @@ sort($npcImages);
                                 <td><?php echo htmlspecialchars($d['level'] ?? ''); ?></td>
                                 <td>
                                     <button class="btn btn-sm btn-primary" onclick='editPet(<?php echo json_encode(['id' => $pet['id'], 'data' => $d]); ?>)'>Edit</button>
+                                    <button class="btn btn-sm btn-outline-info" onclick='copyPet(<?php echo json_encode(['id' => $pet['id'], 'data' => $d]); ?>)'>Copy</button>
                                     <form method="POST" style="display:inline;" onsubmit="return confirm('Delete pet?');">
                                         <input type="hidden" name="action" value="delete_pet">
                                         <input type="hidden" name="pet_key" value="<?php echo htmlspecialchars($pet['id']); ?>">
@@ -1448,6 +1453,29 @@ sort($npcImages);
                             <option value="cooldown"></option>
                             <option value="duration"></option>
                         </datalist>
+                        <datalist id="petResistKeys">
+                            <option value="comboRate"></option>
+                            <option value="critRate"></option>
+                            <option value="critDamage"></option>
+                            <option value="hitRate"></option>
+                            <option value="dodgeRate"></option>
+                            <option value="defense"></option>
+                            <option value="berserkRate"></option>
+                            <option value="berserkDamage"></option>
+                            <option value="physicalResist"></option>
+                            <option value="magicalResist"></option>
+                            <option value="elementalResist"></option>
+                            <option value="chaosResist"></option>
+                            <option value="stunResist"></option>
+                            <option value="hipnoResist"></option>
+                            <option value="poisonResist"></option>
+                            <option value="flashResist"></option>
+                            <option value="fireResist"></option>
+                            <option value="iceResist"></option>
+                            <option value="deathResist"></option>
+                            <option value="evilResist"></option>
+                            <option value="drainResist"></option>
+                        </datalist>
                 </div>
             </div>
         </div>
@@ -1483,7 +1511,16 @@ sort($npcImages);
                         <div class="col-md-6 mb-3"><label>Key</label><input type="text" name="pet_key" id="petKey" class="form-control" required></div>
                         <div class="col-md-6 mb-3"><label>Name</label><input type="text" name="name" id="petName" class="form-control" required></div>
                         <div class="col-md-4 mb-3"><label>Pet ID</label><input type="number" name="pet_id" id="petId" class="form-control"></div>
-                        <div class="col-md-4 mb-3"><label>File</label><input type="number" name="file" id="petFile" class="form-control" required></div>
+                        <div class="col-md-4 mb-3">
+                            <label>File</label>
+                            <div class="input-group">
+                                <input type="number" name="file" id="petFile" class="form-control" required onchange="updatePetPreview()">
+                                <span class="input-group-text bg-dark border-secondary p-1" style="min-width: 40px; justify-content: center;">
+                                    <img id="petPreview" class="pet-anim" data-file="" src="" alt="?" style="max-width: 32px; max-height: 32px; display: none;">
+                                    <span id="petPreviewText" class="small text-muted" style="display: none;">?</span>
+                                </span>
+                            </div>
+                        </div>
                         <div class="col-md-4 mb-3"><label>Species</label><input type="number" name="species" id="petSpecies" class="form-control" required></div>
                         <div class="col-md-4 mb-3"><label>Level</label><input type="number" name="level" id="petLevel" class="form-control" required></div>
                         <div class="col-md-12">
@@ -1518,6 +1555,13 @@ sort($npcImages);
                             </div>
                             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addResistRow()">Add Resist</button>
                         </div>
+
+                        <div class="col-md-12">
+                            <h6 class="mt-3">Resist Data</h6>
+                        </div>
+                        <div class="col-md-4 mb-2"><label>Physical Resist</label><input type="number" step="0.01" name="physical_resist" id="petPhysicalResist" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label>Magical Resist</label><input type="number" step="0.01" name="magical_resist" id="petMagicalResist" class="form-control"></div>
+                        <div class="col-md-4 mb-2"><label>Elemental Resist</label><input type="number" step="0.01" name="elemental_resist" id="petElementalResist" class="form-control"></div>
 
                         <div class="col-md-12">
                             <h6 class="mt-3">Skills</h6>
@@ -1745,9 +1789,72 @@ sort($npcImages);
                                     <label class="form-label">Shapeshift File</label>
                                     <input type="number" id="itemActionPresetShiftFile" class="form-control form-control-sm" value="0">
                                 </div>
-                                <div class="flex-grow-1">
-                                    <label class="form-label">Shapeshift Stats JSON</label>
-                                    <input type="text" id="itemActionPresetShiftStats" class="form-control form-control-sm" placeholder='{"attack":14,"berserkRate":10,"berserkDamage":10}'>
+                                <div>
+                                    <label class="form-label">Attack</label>
+                                    <input type="number" id="itemActionPresetShiftAttack" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Berserk Rate</label>
+                                    <input type="number" id="itemActionPresetShiftBerserkRate" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Berserk Damage</label>
+                                    <input type="number" id="itemActionPresetShiftBerserkDamage" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Resist Stat</label>
+                                    <select id="itemActionPresetShiftResistKey" class="form-select form-select-sm">
+                                        <option value="">None</option>
+                                        <option value="hitRate">Hit Rate</option>
+                                        <option value="dodgeRate">Dodge Rate</option>
+                                        <option value="critRate">Crit Rate</option>
+                                        <option value="critDamage">Crit Damage</option>
+                                        <option value="defense">Defense</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label">Resist Value</label>
+                                    <input type="number" id="itemActionPresetShiftResistValue" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Chaos Resist</label>
+                                    <input type="number" id="itemActionPresetShiftChaosResist" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Stun Resist</label>
+                                    <input type="number" id="itemActionPresetShiftStunResist" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Hipno Resist</label>
+                                    <input type="number" id="itemActionPresetShiftHipnoResist" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Poison Resist</label>
+                                    <input type="number" id="itemActionPresetShiftPoisonResist" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Flash Resist</label>
+                                    <input type="number" id="itemActionPresetShiftFlashResist" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Fire Resist</label>
+                                    <input type="number" id="itemActionPresetShiftFireResist" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Ice Resist</label>
+                                    <input type="number" id="itemActionPresetShiftIceResist" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Death Resist</label>
+                                    <input type="number" id="itemActionPresetShiftDeathResist" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Evil Resist</label>
+                                    <input type="number" id="itemActionPresetShiftEvilResist" class="form-control form-control-sm" value="0">
+                                </div>
+                                <div>
+                                    <label class="form-label">Drain Resist</label>
+                                    <input type="number" id="itemActionPresetShiftDrainResist" class="form-control form-control-sm" value="0">
                                 </div>
                                 <div>
                                     <label class="form-label">Yes Text</label>
@@ -2192,6 +2299,7 @@ sort($npcImages);
             document.getElementById('itemStatsJson').value = '';
             document.getElementById('itemActionJson').value = '';
             document.getElementById('itemPropsJson').value = '';
+            resetShapeshiftPresetFields();
             toggleItemIdWarning(false);
             resetItemStatRows();
             resetItemActionRows();
@@ -2227,7 +2335,165 @@ sort($npcImages);
             renderItemStatRows(data.stats || {});
             renderItemKeyValueRows('#itemActionTable tbody', data.action || {});
             renderItemKeyValueRows('#itemPropsTable tbody', data.itemProperties || {});
+            populateShapeshiftPresetFields(data.action || null);
             new bootstrap.Modal(document.getElementById('itemModal')).show();
+        }
+
+        function copyItem(data) {
+            const copied = { ...data };
+            editItem(copied);
+            document.getElementById('itemId').value = '';
+            toggleItemIdWarning(false);
+        }
+
+        function resetShapeshiftPresetFields() {
+            const preset = document.getElementById('itemActionPreset');
+            if (preset) preset.value = '';
+            const fields = [
+                'itemActionPresetShiftMessage',
+                'itemActionPresetShiftName',
+                'itemActionPresetShiftFile',
+                'itemActionPresetShiftAttack',
+                'itemActionPresetShiftBerserkRate',
+                'itemActionPresetShiftBerserkDamage',
+                'itemActionPresetShiftResistKey',
+                'itemActionPresetShiftResistValue',
+                'itemActionPresetShiftChaosResist',
+                'itemActionPresetShiftStunResist',
+                'itemActionPresetShiftHipnoResist',
+                'itemActionPresetShiftPoisonResist',
+                'itemActionPresetShiftFlashResist',
+                'itemActionPresetShiftFireResist',
+                'itemActionPresetShiftIceResist',
+                'itemActionPresetShiftDeathResist',
+                'itemActionPresetShiftEvilResist',
+                'itemActionPresetShiftDrainResist',
+                'itemActionPresetShiftYes',
+                'itemActionPresetShiftNo'
+            ];
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (el.tagName === 'SELECT') {
+                    el.value = '';
+                } else if (el.type === 'number') {
+                    el.value = '0';
+                } else {
+                    el.value = '';
+                }
+            });
+        }
+
+        function populateShapeshiftPresetFields(action) {
+            resetShapeshiftPresetFields();
+            const shapeshift = findShapeshiftNpcSay(action);
+            if (!shapeshift) return;
+
+            const preset = document.getElementById('itemActionPreset');
+            if (preset) preset.value = 'shapeshift-potion';
+
+            const messageEl = document.getElementById('itemActionPresetShiftMessage');
+            if (messageEl) messageEl.value = shapeshift.npcSay?.message ?? '';
+
+            const nameEl = document.getElementById('itemActionPresetShiftName');
+            if (nameEl) nameEl.value = shapeshift.shapeShift?.name ?? '';
+
+            const fileEl = document.getElementById('itemActionPresetShiftFile');
+            if (fileEl) fileEl.value = shapeshift.shapeShift?.file ?? 0;
+
+            const stats = shapeshift.shapeShift?.stats || {};
+            const attackEl = document.getElementById('itemActionPresetShiftAttack');
+            if (attackEl) attackEl.value = stats.attack ?? 0;
+
+            const berserkRateEl = document.getElementById('itemActionPresetShiftBerserkRate');
+            if (berserkRateEl) berserkRateEl.value = stats.berserkRate ?? 0;
+
+            const berserkDamageEl = document.getElementById('itemActionPresetShiftBerserkDamage');
+            if (berserkDamageEl) berserkDamageEl.value = stats.berserkDamage ?? 0;
+
+            const resistKeyEl = document.getElementById('itemActionPresetShiftResistKey');
+            const resistValueEl = document.getElementById('itemActionPresetShiftResistValue');
+            if (resistKeyEl && resistValueEl) {
+                const resistKeys = ['hitRate', 'dodgeRate', 'critRate', 'critDamage', 'defense'];
+                const foundKey = resistKeys.find(key => typeof stats[key] !== 'undefined');
+                resistKeyEl.value = foundKey || '';
+                resistValueEl.value = foundKey ? stats[foundKey] ?? 0 : 0;
+            }
+
+            const chaosResistEl = document.getElementById('itemActionPresetShiftChaosResist');
+            if (chaosResistEl) chaosResistEl.value = stats.chaosResist ?? 0;
+
+            const stunResistEl = document.getElementById('itemActionPresetShiftStunResist');
+            if (stunResistEl) stunResistEl.value = stats.stunResist ?? 0;
+
+            const hipnoResistEl = document.getElementById('itemActionPresetShiftHipnoResist');
+            if (hipnoResistEl) hipnoResistEl.value = stats.hipnoResist ?? 0;
+
+            const poisonResistEl = document.getElementById('itemActionPresetShiftPoisonResist');
+            if (poisonResistEl) poisonResistEl.value = stats.poisonResist ?? 0;
+
+            const flashResistEl = document.getElementById('itemActionPresetShiftFlashResist');
+            if (flashResistEl) flashResistEl.value = stats.flashResist ?? 0;
+
+            const fireResistEl = document.getElementById('itemActionPresetShiftFireResist');
+            if (fireResistEl) fireResistEl.value = stats.fireResist ?? 0;
+
+            const iceResistEl = document.getElementById('itemActionPresetShiftIceResist');
+            if (iceResistEl) iceResistEl.value = stats.iceResist ?? 0;
+
+            const deathResistEl = document.getElementById('itemActionPresetShiftDeathResist');
+            if (deathResistEl) deathResistEl.value = stats.deathResist ?? 0;
+
+            const evilResistEl = document.getElementById('itemActionPresetShiftEvilResist');
+            if (evilResistEl) evilResistEl.value = stats.evilResist ?? 0;
+
+            const drainResistEl = document.getElementById('itemActionPresetShiftDrainResist');
+            if (drainResistEl) drainResistEl.value = stats.drainResist ?? 0;
+
+            const yesEl = document.getElementById('itemActionPresetShiftYes');
+            if (yesEl) yesEl.value = shapeshift.yesOption?.text ?? '';
+
+            const noEl = document.getElementById('itemActionPresetShiftNo');
+            if (noEl) noEl.value = shapeshift.noOption?.text ?? '';
+        }
+
+        function findShapeshiftNpcSay(action) {
+            if (!action) return null;
+
+            if (Array.isArray(action)) {
+                for (const entry of action) {
+                    const found = findShapeshiftNpcSay(entry);
+                    if (found) return found;
+                }
+                return null;
+            }
+
+            if (action.type === 'array' && Array.isArray(action.actions)) {
+                for (const entry of action.actions) {
+                    const found = findShapeshiftNpcSay(entry);
+                    if (found) return found;
+                }
+                return null;
+            }
+
+            if (action.type !== 'npcSay' || !Array.isArray(action.options)) return null;
+
+            const yesOption = action.options.find(option =>
+                option?.action?.type === 'array' && Array.isArray(option.action.actions)
+            );
+            if (!yesOption) return null;
+
+            const shapeShift = yesOption.action.actions.find(act => act?.type === 'shapeShift');
+            if (!shapeShift) return null;
+
+            const noOption = action.options.find(option => option?.action === undefined || option?.action === null);
+
+            return {
+                npcSay: action,
+                yesOption,
+                noOption,
+                shapeShift
+            };
         }
 
         const itemIdMap = itemsData.reduce((acc, item) => {
@@ -2421,7 +2687,21 @@ sort($npcImages);
             const shiftMessage = document.getElementById('itemActionPresetShiftMessage')?.value?.trim() || '';
             const shiftName = document.getElementById('itemActionPresetShiftName')?.value?.trim() || '';
             const shiftFileRaw = document.getElementById('itemActionPresetShiftFile')?.value ?? '0';
-            const shiftStatsRaw = document.getElementById('itemActionPresetShiftStats')?.value?.trim() || '';
+            const shiftAttackRaw = document.getElementById('itemActionPresetShiftAttack')?.value ?? '0';
+            const shiftBerserkRateRaw = document.getElementById('itemActionPresetShiftBerserkRate')?.value ?? '0';
+            const shiftBerserkDamageRaw = document.getElementById('itemActionPresetShiftBerserkDamage')?.value ?? '0';
+            const shiftResistKey = document.getElementById('itemActionPresetShiftResistKey')?.value ?? '';
+            const shiftResistValueRaw = document.getElementById('itemActionPresetShiftResistValue')?.value ?? '0';
+            const shiftChaosResistRaw = document.getElementById('itemActionPresetShiftChaosResist')?.value ?? '0';
+            const shiftStunResistRaw = document.getElementById('itemActionPresetShiftStunResist')?.value ?? '0';
+            const shiftHipnoResistRaw = document.getElementById('itemActionPresetShiftHipnoResist')?.value ?? '0';
+            const shiftPoisonResistRaw = document.getElementById('itemActionPresetShiftPoisonResist')?.value ?? '0';
+            const shiftFlashResistRaw = document.getElementById('itemActionPresetShiftFlashResist')?.value ?? '0';
+            const shiftFireResistRaw = document.getElementById('itemActionPresetShiftFireResist')?.value ?? '0';
+            const shiftIceResistRaw = document.getElementById('itemActionPresetShiftIceResist')?.value ?? '0';
+            const shiftDeathResistRaw = document.getElementById('itemActionPresetShiftDeathResist')?.value ?? '0';
+            const shiftEvilResistRaw = document.getElementById('itemActionPresetShiftEvilResist')?.value ?? '0';
+            const shiftDrainResistRaw = document.getElementById('itemActionPresetShiftDrainResist')?.value ?? '0';
             const shiftYesText = document.getElementById('itemActionPresetShiftYes')?.value?.trim() || '';
             const shiftNoText = document.getElementById('itemActionPresetShiftNo')?.value?.trim() || '';
             let action = null;
@@ -2493,7 +2773,32 @@ sort($npcImages);
                         return;
                     }
                     try {
-                        const shiftStats = shiftStatsRaw ? JSON.parse(shiftStatsRaw) : {};
+                        const shiftStats = {
+                            attack: Number(shiftAttackRaw) || 0,
+                            berserkRate: Number(shiftBerserkRateRaw) || 0,
+                            berserkDamage: Number(shiftBerserkDamageRaw) || 0
+                        };
+                        const resistStats = [
+                            ['chaosResist', shiftChaosResistRaw],
+                            ['stunResist', shiftStunResistRaw],
+                            ['hipnoResist', shiftHipnoResistRaw],
+                            ['poisonResist', shiftPoisonResistRaw],
+                            ['flashResist', shiftFlashResistRaw],
+                            ['fireResist', shiftFireResistRaw],
+                            ['iceResist', shiftIceResistRaw],
+                            ['deathResist', shiftDeathResistRaw],
+                            ['evilResist', shiftEvilResistRaw],
+                            ['drainResist', shiftDrainResistRaw]
+                        ];
+                        resistStats.forEach(([key, rawValue]) => {
+                            const value = Number(rawValue);
+                            if (!Number.isNaN(value) && value !== 0) {
+                                shiftStats[key] = value;
+                            }
+                        });
+                        if (shiftResistKey) {
+                            shiftStats[shiftResistKey] = Number(shiftResistValueRaw) || 0;
+                        }
                         action = {
                             type: 'npcSay',
                             message: shiftMessage,
@@ -2517,7 +2822,7 @@ sort($npcImages);
                             ]
                         };
                     } catch (e) {
-                        alert('Invalid Shapeshift Stats JSON.');
+                        alert('Invalid Shapeshift Stats values.');
                         return;
                     }
                     break;
@@ -2677,8 +2982,12 @@ sort($npcImages);
             document.getElementById('petStatRatesJson').value = '';
             document.getElementById('petResistJson').value = '';
             document.getElementById('petSkillsJson').value = '';
+            document.getElementById('petPhysicalResist').value = '';
+            document.getElementById('petMagicalResist').value = '';
+            document.getElementById('petElementalResist').value = '';
             resetResistRows();
             resetSkillRows();
+            updatePetPreview();
         }
 
         function editPet(payload) {
@@ -2707,9 +3016,77 @@ sort($npcImages);
             document.getElementById('petStatRatesJson').value = data.statRates ? JSON.stringify(data.statRates, null, 2) : '';
             document.getElementById('petResistJson').value = data.resist ? JSON.stringify(data.resist, null, 2) : '';
             document.getElementById('petSkillsJson').value = data.skills ? JSON.stringify(data.skills, null, 2) : '';
+            document.getElementById('petPhysicalResist').value = data.physicalResist ?? '';
+            document.getElementById('petMagicalResist').value = data.magicalResist ?? '';
+            document.getElementById('petElementalResist').value = data.elementalResist ?? '';
             renderResistRows(data.resist || {});
             renderSkillRows(data.skills || []);
+            updatePetPreview();
             new bootstrap.Modal(document.getElementById('petModal')).show();
+        }
+
+        function copyPet(payload) {
+            const data = payload.data || {};
+            const copied = {
+                ...data,
+                key: '',
+                petId: data.petId ?? ''
+            };
+            editPet({ id: '', data: copied });
+            document.getElementById('petKey').value = '';
+        }
+
+        function updatePetPreview() {
+            const fileId = document.getElementById('petFile').value;
+            const img = document.getElementById('petPreview');
+            const txt = document.getElementById('petPreviewText');
+
+            img.onload = () => {
+                img.style.display = 'block';
+                txt.style.display = 'none';
+            };
+            img.onerror = () => {
+                img.style.display = 'none';
+                txt.style.display = 'block';
+                txt.innerText = fileId;
+            };
+            img.dataset.file = fileId;
+            img.onclick = () => togglePetAnimation(img);
+            img.src = `npc_image.php?file=${fileId}`;
+        }
+
+        function togglePetAnimation(img) {
+            if (!img) return;
+            const fileId = img.dataset.file || img.getAttribute('data-file') || '';
+            if (!fileId) return;
+
+            if (img.dataset.animating === 'true') {
+                const intervalId = parseInt(img.dataset.animInterval || '0', 10);
+                if (intervalId) {
+                    clearInterval(intervalId);
+                }
+                img.dataset.animating = 'false';
+                img.dataset.frame = '0';
+                img.dataset.animInterval = '';
+                img.src = `npc_image.php?file=${fileId}&frame=0`;
+                return;
+            }
+
+            fetch(`npc_image.php?file=${fileId}&mode=meta`)
+                .then(r => r.json())
+                .then(meta => {
+                    const frames = parseInt(meta.frames || 1, 10);
+                    if (!frames || frames <= 1) return;
+                    img.dataset.animating = 'true';
+                    img.dataset.frame = '0';
+                    const intervalId = setInterval(() => {
+                        let frame = parseInt(img.dataset.frame || '0', 10);
+                        frame = (frame + 1) % frames;
+                        img.dataset.frame = frame.toString();
+                        img.src = `npc_image.php?file=${fileId}&frame=${frame}`;
+                    }, 200);
+                    img.dataset.animInterval = intervalId.toString();
+                });
         }
 
         function resetResistRows() {
@@ -2731,7 +3108,7 @@ sort($npcImages);
             if (!tbody) return;
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td><input type="text" name="resist_key[]" class="form-control form-control-sm" value="${key}"></td>
+                <td><input type="text" name="resist_key[]" class="form-control form-control-sm" value="${key}" list="petResistKeys"></td>
                 <td><input type="number" step="0.01" name="resist_value[]" class="form-control form-control-sm" value="${value}"></td>
                 <td><button type="button" class="btn btn-sm btn-outline-danger">X</button></td>
             `;
@@ -3986,6 +4363,9 @@ sort($npcImages);
         if (!savedItemSearch) {
             renderItemPage(1);
         }
+        document.querySelectorAll('.pet-anim').forEach(img => {
+            img.onclick = () => togglePetAnimation(img);
+        });
         loadMap(true);
         renderQuests();
     </script>

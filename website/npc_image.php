@@ -112,9 +112,9 @@ while ($pos < $len - 1) { // Ensure at least 2 bytes exist
 }
 
 // Select Animation
-// Prefer 'Stand', 'S1', 'Idle'
+// Prefer option B (idle) before walking/stand
 $selectedFrames = [];
-$candidates = ['Stand', 'S1', 'W1', 'Rest', 'Idle'];
+$candidates = ['B1', 'B', 'Idle', 'Stand', 'S1', 'W1', 'Rest'];
 foreach ($candidates as $c) {
     foreach ($anims as $name => $frames) {
         if (stripos($name, $c) !== false && !empty($frames)) {
